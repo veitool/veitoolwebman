@@ -1,0 +1,2 @@
+*.js linguist-language=php
+*.xml linguist-language=php
