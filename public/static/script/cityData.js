@@ -1,0 +1,1 @@
+var cityData = [{text:"北京",value:"1"}];
