@@ -49,6 +49,6 @@ veitoolphp@gmail.com
 <p>如果您觉得 Veitool 框架对您有所帮助，欢迎捐赠。<b><a href="https://www.veitool.com/donate">【捐赠列表】</a></b></p>
 
 ## 版权信息
-Veitool 采用 [Apache2.0](https://opensource.org/license/apache-2-0/) 开源协议发布，并免费提供使用《[免责声明](https://gitee.com/veitool/veitool/blob/master/DISCLAIMER.md)》。
+Veitool 采用 [Apache2.0](https://opensource.org/license/apache-2-0/) 开源协议发布，并免费提供使用《[免责声明](https://gitee.com/veitool/veitoolwebman/blob/master/DISCLAIMER.md)》。
 
 版权所有Copyright © 2025 by https://www.veitool.com All rights reserved。
