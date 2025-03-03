@@ -32,12 +32,11 @@ class SystemArea extends Base
     public static function getAreaStr(string $aid = '', string $fg = '-')
     {
         $str = '';
-        if($rs = Cache::get('VAREAS_N')){
-            $arr = explode(',', $aid);
-            foreach ($arr as $v){
-                if(isset($rs[$v])){
-                    $str .= $str ? $fg.$rs[$v] : $rs[$v];
-                }
+        if(!$rs = cache('VAREAS_N')) $rs = self::cache(1,1);
+        $arr = explode(',', $aid);
+        foreach ($arr as $v){
+            if(isset($rs[$v])){
+                $str .= $str ? $fg.$rs[$v] : $rs[$v];
             }
         }
         return $str;
@@ -72,9 +71,10 @@ class SystemArea extends Base
     /**
      * 缓存地区数据
      * @param   int   $reset   是否重置缓存
+     * @param   int   $flag    是否返回键值对数据
      * @return  array
      */
-    public static function cache(int $reset = 0)
+    public static function cache(int $reset = 0, int $flag = 0)
     {
         $key = 'VAREAS';
         $rs = Cache::get($key);
@@ -95,7 +95,7 @@ class SystemArea extends Base
                 fclose($myfile);
             }
         }
-        return $rs;
+        return $flag ? $data : $rs;
     }
 
 }
