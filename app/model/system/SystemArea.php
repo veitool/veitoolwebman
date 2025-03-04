@@ -32,7 +32,7 @@ class SystemArea extends Base
     public static function getAreaStr(string $aid = '', string $fg = '-')
     {
         $str = '';
-        if(!$rs = cache('VAREAS_N')) $rs = self::cache(1,1);
+        if(!$rs = Cache::get('VAREAS_N')) $rs = self::cache(1, 1);
         $arr = explode(',', $aid);
         foreach ($arr as $v){
             if(isset($rs[$v])){
