@@ -46,21 +46,7 @@ class Coroutine implements CoroutineInterface
      */
     public function __construct(callable $callable)
     {
-        $this->driver = new (self::driverClass())($callable);
-    }
-
-    /**
-     * Get driver class.
-     *
-     * @return class-string<CoroutineInterface>
-     */
-    protected static function driverClass(?string $driverClass = null): string
-    {
-        return static::$driverClass ??= $driverClass ?? match (Worker::$eventLoopClass ?? null) {
-            SwooleEvent::class => SwooleCoroutine::class,
-            SwowEvent::class => SwowCoroutine::class,
-            default => Fiber::class,
-        };
+        $this->driver = new static::$driverClass($callable);
     }
 
     /**
@@ -68,7 +54,7 @@ class Coroutine implements CoroutineInterface
      */
     public static function create(callable $callable, ...$args): CoroutineInterface
     {
-        return static::driverClass()::create($callable, ...$args);
+        return static::$driverClass::create($callable, ...$args);
     }
 
     /**
@@ -100,7 +86,7 @@ class Coroutine implements CoroutineInterface
      */
     public static function defer(callable $callable): void
     {
-        self::driverClass()::defer($callable);
+        static::$driverClass::defer($callable);
     }
 
     /**
@@ -108,7 +94,7 @@ class Coroutine implements CoroutineInterface
      */
     public static function suspend(mixed $value = null): mixed
     {
-        return self::driverClass()::suspend($value);
+        return static::$driverClass::suspend($value);
     }
 
     /**
@@ -116,7 +102,7 @@ class Coroutine implements CoroutineInterface
      */
     public static function getCurrent(): CoroutineInterface
     {
-        return self::driverClass()::getCurrent();
+        return static::$driverClass::getCurrent();
     }
 
     /**
@@ -124,7 +110,20 @@ class Coroutine implements CoroutineInterface
      */
     public static function isCoroutine(): bool
     {
-        return self::driverClass()::isCoroutine();
+        return static::$driverClass::isCoroutine();
+    }
+
+    /**
+     * @return void
+     */
+    public static function init(): void
+    {
+        static::$driverClass = match (Worker::$eventLoopClass ?? null) {
+            SwooleEvent::class => SwooleCoroutine::class,
+            SwowEvent::class => SwowCoroutine::class,
+            default => Fiber::class,
+        };
     }
 
 }
+Coroutine::init();

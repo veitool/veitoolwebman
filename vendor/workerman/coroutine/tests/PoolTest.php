@@ -96,8 +96,12 @@ class PoolTest extends TestCase
 
         $pool->put($connection);
 
-        $channel = $this->getPrivateProperty($pool, 'channel');
-        $this->assertEquals(1, $channel->length());
+        if (Coroutine::isCoroutine()) {
+            $channel = $this->getPrivateProperty($pool, 'channel');
+            $this->assertEquals(1, $channel->length());
+        }
+
+        $this->assertEquals(1, $pool->getConnectionCount());
     }
 
     public function testPutConnectionDoesNotBelong()
@@ -236,10 +240,14 @@ class PoolTest extends TestCase
         for ($i = 0; $i < $maxConnections; $i++) {
             $connections[] = $pool->get();
         }
-        $this->assertEquals($maxConnections, $this->getCurrentConnections($pool));
+
+        $this->assertEquals(Coroutine::isCoroutine() ? $maxConnections : 1, $this->getCurrentConnections($pool));
 
         $pool->closeConnections();
-        $this->assertEquals($maxConnections, $this->getCurrentConnections($pool));
+        $this->assertEquals(Coroutine::isCoroutine() ? $maxConnections : 0, $this->getCurrentConnections($pool));
+        if (!Coroutine::isCoroutine()) {
+            return;
+        }
 
         foreach ($connections as $connection) {
             $pool->put($connection);
@@ -348,13 +356,13 @@ class PoolTest extends TestCase
         $connection = $pool->get();
 
         // 检查 currentConnections 是否增加
-        $this->assertEquals($initialConnections + 1, $this->getCurrentConnections($pool));
+        $this->assertEquals(Coroutine::isCoroutine() ? $initialConnections + 1 : 1, $this->getCurrentConnections($pool));
 
         // 不归还连接，并销毁连接对象
         unset($connection);
 
         // 检查 currentConnections 是否减少
-        $this->assertEquals($initialConnections, $this->getCurrentConnections($pool));
+        $this->assertEquals(Coroutine::isCoroutine() ? $initialConnections : 1, $this->getCurrentConnections($pool));
     }
 
     private function getPrivateProperty($object, string $property)

@@ -569,16 +569,14 @@ class Html extends BaseWriter
     {
         if ($this->includeCharts) {
             foreach ($worksheet->getChartCollection() as $chart) {
-                if ($chart instanceof Chart) {
-                    $chartCoordinates = $chart->getTopLeftPosition();
-                    $this->sheetCharts[$chartCoordinates['cell']] = $chart;
-                    $chartTL = Coordinate::indexesFromString($chartCoordinates['cell']);
-                    if ($chartTL[1] > $rowMax) {
-                        $rowMax = $chartTL[1];
-                    }
-                    if ($chartTL[0] > $colMax) {
-                        $colMax = $chartTL[0];
-                    }
+                $chartCoordinates = $chart->getTopLeftPosition();
+                $this->sheetCharts[$chartCoordinates['cell']] = $chart;
+                $chartTL = Coordinate::indexesFromString($chartCoordinates['cell']);
+                if ($chartTL[1] > $rowMax) {
+                    $rowMax = $chartTL[1];
+                }
+                if ($chartTL[0] > $colMax) {
+                    $colMax = $chartTL[0];
                 }
             }
         }
@@ -1405,7 +1403,7 @@ class Html extends BaseWriter
 
             // Converts the cell content so that spaces occuring at beginning of each new line are replaced by &nbsp;
             // Example: "  Hello\n to the world" is converted to "&nbsp;&nbsp;Hello\n&nbsp;to the world"
-            $cellData = Preg::replace('/(?m)(?:^|\\G) /', '&nbsp;', $cellData);
+            $cellData = Preg::replace('/(?m)(?:^|\G) /', '&nbsp;', $cellData);
 
             // convert newline "\n" to '<br>'
             $cellData = nl2br($cellData);
@@ -1593,8 +1591,8 @@ class Html extends BaseWriter
             if ($worksheet->hyperlinkExists($coordinate) && !$worksheet->getHyperlink($coordinate)->isInternal()) {
                 $url = $worksheet->getHyperlink($coordinate)->getUrl();
                 $urlDecode1 = html_entity_decode($url, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-                $urlTrim = Preg::replace('/^\\s+/u', '', $urlDecode1);
-                $parseScheme = Preg::isMatch('/^([\\w\\s\\x00-\\x1f]+):/u', strtolower($urlTrim), $matches);
+                $urlTrim = Preg::replace('/^\s+/u', '', $urlDecode1);
+                $parseScheme = Preg::isMatch('/^([\w\s\x00-\x1f]+):/u', strtolower($urlTrim), $matches);
                 if ($parseScheme && !in_array($matches[1], ['http', 'https', 'file', 'ftp', 'mailto', 's3'], true)) {
                     $cellData = htmlspecialchars($url, Settings::htmlEntityFlags());
                     $cellData = self::replaceControlChars($cellData);
@@ -1623,7 +1621,7 @@ class Html extends BaseWriter
                 //    Also apply style from last cell in merge to fix borders -
                 //        relies on !important for non-none border declarations in createCSSStyleBorder
                 $endCellCoord = Coordinate::stringFromColumnIndex($colNum + $colSpan) . ($row + $rowSpan);
-                if (!$this->useInlineCss) {
+                if (!$this->useInlineCss && is_string($cssClass)) {
                     $cssClass .= ' style' . $worksheet->getCell($endCellCoord)->getXfIndex();
                 } else {
                     $endBorders = $this->spreadsheet->getCellXfByIndex($worksheet->getCell($endCellCoord)->getXfIndex())->getBorders();
@@ -1660,7 +1658,7 @@ class Html extends BaseWriter
     private static function replaceControlChars(string $convert): string
     {
         return (string) preg_replace_callback(
-            '/[\\x00-\\x1f]/',
+            '/[\x00-\x1f]/',
             [self::class, 'replaceNonAscii'],
             $convert
         );
@@ -1763,7 +1761,7 @@ class Html extends BaseWriter
         $color = null; // initialize
         $matches = [];
 
-        $color_regex = '/^\\[[a-zA-Z]+\\]/';
+        $color_regex = '/^\[[a-zA-Z]+\]/';
         if (Preg::isMatch($color_regex, $format, $matches)) {
             $color = str_replace(['[', ']'], '', $matches[0]);
             $color = strtolower($color);

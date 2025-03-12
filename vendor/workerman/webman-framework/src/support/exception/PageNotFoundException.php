@@ -24,7 +24,7 @@ class PageNotFoundException extends NotFoundException
     /**
      * @var string
      */
-    protected $template = '/public/404';
+    protected $template = '/app/view/404';
 
     /**
      * PageNotFoundException constructor.

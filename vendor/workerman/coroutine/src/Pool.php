@@ -22,6 +22,7 @@ use RuntimeException;
 use stdClass;
 use Throwable;
 use WeakMap;
+use Workerman\Coroutine;
 use Workerman\Coroutine\Utils\DestructionWatcher;
 use Workerman\Timer;
 use Workerman\Worker;
@@ -45,6 +46,11 @@ class Pool implements PoolInterface
      * @var WeakMap
      */
     protected WeakMap $connections;
+
+    /**
+     * @var ?object
+     */
+    protected ?object $nonCoroutineConnection = null;
 
     /**
      * @var WeakMap
@@ -91,6 +97,9 @@ class Pool implements PoolInterface
      */
     protected LoggerInterface|Closure|null $logger = null;
 
+    /**
+     * @var array|string[]
+     */
     private array $configurableProperties = [
         'minConnections',
         'idleTimeout',
@@ -169,6 +178,12 @@ class Pool implements PoolInterface
      */
     public function get(): object
     {
+        if (!Coroutine::isCoroutine()) {
+            if (!$this->nonCoroutineConnection) {
+                $this->nonCoroutineConnection = $this->createConnection();
+            }
+            return $this->nonCoroutineConnection;
+        }
         $num = $this->channel->length();
         if ($num === 0 && $this->getConnectionCount() < $this->maxConnections) {
             return $this->createConnection();
@@ -194,6 +209,9 @@ class Pool implements PoolInterface
         // It may have been closed by $this->closeConnection($connection).
         if (!isset($this->connections[$connection])) {
             throw new RuntimeException('The connection does not belong to the connection pool.');
+        }
+        if ($connection === $this->nonCoroutineConnection) {
+            return;
         }
         try {
             $this->channel->push($connection);
@@ -256,6 +274,9 @@ class Pool implements PoolInterface
         }
         // Mark this connection as no longer belonging to the connection pool.
         unset($this->lastUsedTimes[$connection], $this->lastHeartbeatTimes[$connection], $this->connections[$connection]);
+        if ($this->nonCoroutineConnection === $connection) {
+            $this->nonCoroutineConnection = null;
+        }
         if (!$this->connectionDestroyHandler) {
             return;
         }
@@ -285,19 +306,34 @@ class Pool implements PoolInterface
                 $this->closeConnection($connection);
                 continue;
             }
-            $lastHeartbeatTime = $this->lastHeartbeatTimes[$connection] ?? 0;
-            if ($this->connectionHeartbeatHandler && $time - $lastHeartbeatTime >= $this->heartbeatInterval) {
-                try {
-                    ($this->connectionHeartbeatHandler)($connection);
-                    $this->lastHeartbeatTimes[$connection] = time();
-                } catch (Throwable $throwable) {
-                    $this->log($throwable);
-                    $this->closeConnection($connection);
-                    continue;
-                }
-            }
-            $this->channel->push($connection);
+            $this->trySendHeartbeat($connection) && $this->channel->push($connection);
         }
+        if ($this->nonCoroutineConnection) {
+            $this->trySendHeartbeat($this->nonCoroutineConnection);
+        }
+    }
+
+    /**
+     * Try to send heartbeat.
+     *
+     * @param $connection
+     * @return bool
+     */
+    private function trySendHeartbeat($connection): bool
+    {
+        $lastHeartbeatTime = $this->lastHeartbeatTimes[$connection] ?? 0;
+        $time = time();
+        if ($this->connectionHeartbeatHandler && $time - $lastHeartbeatTime >= $this->heartbeatInterval) {
+            try {
+                ($this->connectionHeartbeatHandler)($connection);
+                $this->lastHeartbeatTimes[$connection] = $time;
+            } catch (Throwable $throwable) {
+                $this->log($throwable);
+                $this->closeConnection($connection);
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -325,6 +361,7 @@ class Pool implements PoolInterface
             }
             $this->closeConnection($connection);
         }
+        $this->nonCoroutineConnection && $this->closeConnection($this->nonCoroutineConnection);
     }
 
     /**
@@ -347,4 +384,3 @@ class Pool implements PoolInterface
     }
 
 }
-

@@ -56,6 +56,7 @@ class Gateway extends Worker
      */
     public static $selectLoadBalancingMode = self::ROUTER_LEAST_CONNECTIONS;
 
+
     /**
      * 本机 IP
      *  单机部署默认 127.0.0.1，如果是分布式部署，需要设置成本机 IP
@@ -684,8 +685,8 @@ class Gateway extends Worker
                 // 在一台服务器上businessWorker->name不能相同
                 if (isset($this->_workerConnections[$key])) {
                     self::error("Gateway: Worker->name conflict. Key:{$key}");
-		            $connection->close();
-                    return;
+                    // 关闭老的，使用新的
+                    $this->_workerConnections[$key]->close();
                 }
 		        $connection->key = $key;
                 $this->_workerConnections[$key] = $connection;
@@ -1038,6 +1039,36 @@ class Gateway extends Worker
                 } else {
                     $buffer = serialize(array_keys($this->_uidConnections[$uid]));
                 }
+                $connection->send(pack('N', strlen($buffer)) . $buffer, true);
+                return;
+            // 批量获取与 uid 绑定的所有 client_id Gateway::batchGetClientIdByUid($uid);
+            case GatewayProtocol::CMD_BATCH_GET_CLIENT_ID_BY_UID:
+                $uids = json_decode($data['ext_data']);
+                $return = [];
+                foreach ($uids as $uid) {
+                    if (empty($this->_uidConnections[$uid])) {
+                        $return[$uid] = [];
+                    } else {
+                        $return[$uid] = array_keys($this->_uidConnections[$uid]);
+                    }
+                }
+                $buffer = serialize($return);
+
+                $connection->send(pack('N', strlen($buffer)) . $buffer, true);
+                return;
+            // 批量获取群组ID内客户端个数
+            case GatewayProtocol::CMD_BATCH_GET_CLIENT_COUNT_BY_GROUP:
+                $groups = json_decode($data['ext_data'], true);
+                $return = [];
+                foreach ($groups as $group) {
+                    if (isset($this->_groupConnections[$group])) {
+                        $return[$group] = count($this->_groupConnections[$group]);
+                    } else {
+                        $return[$group] = 0;
+                    }
+                }
+
+                $buffer = serialize($return);
                 $connection->send(pack('N', strlen($buffer)) . $buffer, true);
                 return;
             default :

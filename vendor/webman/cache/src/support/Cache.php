@@ -4,10 +4,12 @@ namespace support;
 
 use ReflectionClass;
 use ReflectionException;
+use Symfony\Component\Cache\Adapter\ApcuAdapter;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Cache\Adapter\PdoAdapter;
+use Symfony\Component\Cache\Exception\CacheException;
 use Symfony\Component\Cache\Psr16Cache;
 use InvalidArgumentException;
 use WeakMap;
@@ -86,6 +88,13 @@ class Cache
                     break;
                 case 'array':
                     $adapter = new ArrayAdapter(0, $stores[$name]['serialize'] ?? false, 0, 0);
+                    break;
+                case 'apcu':
+                    try {
+                      $adapter = new ApcuAdapter('', 0);
+                    } catch (CacheException) {
+                      throw new InvalidArgumentException("cache.store.$name.driver=$driver is not supported.");
+                    }
                     break;
                 /**
                  * Pdo can not reconnect when the connection is lost. So we can not use pdo as cache.
