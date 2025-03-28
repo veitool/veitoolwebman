@@ -119,11 +119,12 @@ abstract class OneToOne extends Relation
             // 执行闭包查询
             $closure($query);
 
-            // 使用withField指定获取关联的字段
-            $withField = $this->query->getOptions('field');
+            // 使用field指定获取关联的字段
+            $withField = $query->getOptions('field');
             if ($withField) {
                 $field = $withField;
             }
+            $query->removeOption('field');
         }
 
         $query->join([$joinTable => $joinAlias], $joinOn, $joinType)

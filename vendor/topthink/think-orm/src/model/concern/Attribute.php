@@ -87,6 +87,9 @@ trait Attribute
                 }
                 // 数据赋值
                 $this->setData($trueName, $value);
+                if ($trueName == $this->getPk()) {
+                    $this->setKey($value);
+                }
                 // 记录原始数据
                 $origin[$trueName] = $value;
             } else {
@@ -608,7 +611,7 @@ trait Attribute
         } elseif ($value instanceof Typeable || is_subclass_of($value, EnumTransform::class)) {
             // 类型自动转换
             $value = $value->value();
-        } elseif (in_array($name, [$this->getOption('createTime'), $this->getOption('updateTime')]) && false != $this->getDateFormat() && is_int($value)) {
+        } elseif (is_int($value) && in_array($name, [$this->getOption('createTime'), $this->getOption('updateTime'), $this->getOption('deleteTime')]) && false != $this->getDateFormat()) {
             // 兼容数字类型时间字段的自动转换输出
             $value = (new \DateTime())
                 ->setTimestamp($value)

@@ -604,6 +604,10 @@ abstract class BaseQuery
         // 添加统一的前缀
         $prefix = $prefix ?: $tableName;
         foreach ($field as $key => &$val) {
+            if (strpos($val, '.')) {
+                continue;
+            }
+
             if (is_numeric($key) && $alias) {
                 $field[$prefix . '.' . $val] = $alias . $val;
                 unset($field[$key]);
@@ -1185,11 +1189,11 @@ abstract class BaseQuery
     /**
      * 指定数据表主键.
      *
-     * @param string|array|bool $pk 主键
+     * @param string|array|bool|null $pk 主键
      *
      * @return $this
      */
-    public function pk(string | array | bool $pk)
+    public function pk(string | array | bool | null $pk)
     {
         $this->pk = $pk;
 

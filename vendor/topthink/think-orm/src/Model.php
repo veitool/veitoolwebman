@@ -24,6 +24,7 @@ use think\db\Express;
 use think\exception\ValidateException;
 use think\model\Collection;
 use think\model\contract\Modelable;
+use think\model\View;
 use WeakMap;
 
 /**
@@ -347,7 +348,7 @@ abstract class Model implements JsonSerializable, ArrayAccess, Arrayable, Jsonab
         $this->autoWriteData($data, $isUpdate, $allow);
 
         $db     = $this->getDbWhere($where);
-        $result = $db->field($allow)->save($data, !$isUpdate);
+        $result = $db->field($allow)->removeOption('data')->save($data, !$isUpdate);
         if (!$isUpdate) {
             $this->exists(true);
             $this->setKey($db->getLastInsID());
@@ -474,23 +475,23 @@ abstract class Model implements JsonSerializable, ArrayAccess, Arrayable, Jsonab
     }
 
     /**
+     * 设置为视图模型（不能写入）.
+     *
+     * @return bool
+     */
+    public function asView(bool $isView = true)
+    {
+        $this->setOption('is_view', $isView);
+    }
+
+    /**
      * 是否为视图模型（不能写入 也不会绑定模型）.
      *
      * @return bool
      */
     public function isView(): bool
     {
-        return false;
-    }
-
-    /**
-     * 是否为简单模型（单表操作 不支持关联 不绑定模型）.
-     *
-     * @return bool
-     */
-    public function isSimple(): bool
-    {
-        return false;
+        return $this->getOption('is_view', false);
     }
 
     /**
@@ -764,6 +765,9 @@ abstract class Model implements JsonSerializable, ArrayAccess, Arrayable, Jsonab
      */
     public function __isset(string $name): bool
     {
+        if ($this->isView()) {
+            return isset(self::$weakMap[$this]['data'][$name]);
+        }
         return !is_null($this->get($name, false));
     }
 

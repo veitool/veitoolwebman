@@ -15,6 +15,7 @@ namespace think;
 
 use ArrayAccess;
 use JsonSerializable;
+use ReflectionClass;
 use think\contract\Arrayable;
 use think\contract\Jsonable;
 use think\model\contract\Modelable;
@@ -48,14 +49,13 @@ abstract class Entity implements JsonSerializable, ArrayAccess, Arrayable, Jsona
             unset($options['model_class']);
         }
 
-        $model->setOptions($options);
-
         self::$weakMap[$this] = [
             'model' =>  $model,
         ];
 
         // 初始化模型
-        $this->init();        
+        $model->setOptions($options);
+        $this->init($options);
     }
 
     /**
@@ -71,9 +71,10 @@ abstract class Entity implements JsonSerializable, ArrayAccess, Arrayable, Jsona
     /**
      *  初始化模型.
      *
+     * @param array $options 模型参数
      * @return void
      */
-    protected function init(): void {}
+    protected function init(array $options = []): void {}
 
     /**
      * 获取模型对象实例.

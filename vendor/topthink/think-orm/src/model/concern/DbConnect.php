@@ -39,6 +39,7 @@ trait DbConnect
             ->pk($this->getPk())
             ->autoInc($this->getOption('autoInc'))
             ->suffix($this->getOption('suffix'))
+            ->setKey($this->getKey())
             ->model($this);
     }
 

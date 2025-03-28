@@ -67,7 +67,7 @@ trait RelationShip
             $bind     = $this->getBindAttr($this->getOption('bindAttr'), $relation);
             if (!empty($bind)) {
                 // 绑定关联属性
-                $this->bindRelationAttr($val, $bind);
+                $this->bindRelationAttr($val, $bind, $relation);
             } elseif (is_subclass_of($type, Model::class)) {
                 // 明确类型直接设置关联属性
                 $this->setRelation($relation, new $type($val));
@@ -215,11 +215,11 @@ trait RelationShip
         $data = is_array($model) ? $model : $model->getData();
         foreach ($data as $key => $val) {
             if (isset($bind[$key])) {
-                $this->set($bind[$key], $val);                    
+                $this->set($bind[$key], $val);
             } elseif ($attr = array_search($key, $bind)) {
                 if (is_numeric($attr) || $this->__isset($attr)) {
                 } else {
-                    $this->set($attr, $val);                    
+                    $this->set($attr, $val);
                 }
             } elseif (in_array($key, $bind) && !$this->__isset($key)) {
                 $this->set($key, $val);
