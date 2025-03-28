@@ -29,13 +29,13 @@ return [
             'break_reconnect' => true,
             // 自定义分页类
             'bootstrap' =>  '',
-            // 连接池配置(仅在swow/swoole驱动下有效)
+            // 连接池配置
             'pool' => [
-                'max_connections' => 5,
-                'min_connections' => 1,
-                'wait_timeout' => 3,
-                'idle_timeout' => 60,
-                'heartbeat_interval' => 50,
+                'max_connections' => 5, // 最大连接数
+                'min_connections' => 1, // 最小连接数
+                'wait_timeout' => 3,    // 从连接池获取连接等待超时时间
+                'idle_timeout' => 60,   // 连接最大空闲时间，超过该时间会被回收
+                'heartbeat_interval' => 50, // 心跳检测间隔，需要小于60秒
             ],
         ],
     ],

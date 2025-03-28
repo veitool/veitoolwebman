@@ -335,7 +335,7 @@ class Query extends BaseQuery
      *
      * @return $this
      */
-    public function autoinc(string $autoinc)
+    public function autoinc(?string $autoinc)
     {
         $this->autoinc = $autoinc;
 
@@ -416,10 +416,6 @@ class Query extends BaseQuery
      */
     public function setInc(string $field, float $step = 1, int $lazyTime = 0)
     {
-        if (empty($this->options['where']) && $this->model) {
-            $this->where($this->model->getWhere());
-        }
-
         if (empty($this->options['where'])) {
             // 如果没有任何更新条件则不执行
             throw new Exception('miss update condition');
@@ -439,10 +435,6 @@ class Query extends BaseQuery
      */
     public function setDec(string $field, float $step = 1, int $lazyTime = 0)
     {
-        if (empty($this->options['where']) && $this->model) {
-            $this->where($this->model->getWhere());
-        }
-
         if (empty($this->options['where'])) {
             // 如果没有任何更新条件则不执行
             throw new Exception('miss update condition');

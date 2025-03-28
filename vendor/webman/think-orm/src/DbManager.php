@@ -4,7 +4,6 @@ declare (strict_types = 1);
 
 namespace Webman\ThinkOrm;
 
-use Illuminate\Events\Dispatcher;
 use Webman\Context;
 use Workerman\Coroutine\Pool;
 use Throwable;

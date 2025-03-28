@@ -13,12 +13,14 @@
 namespace support\think;
 
 use think\db\BaseQuery;
-use think\Event;
 use think\Facade;
 use Webman\ThinkOrm\DbManager;
 
 /**
  * Class Db
+ * 
+ * @mixin DbManager
+ * 
  * 数据库操作类
  *
  * @method static BaseQuery name(string $name) 指定当前数据表名（不含前缀）
@@ -33,6 +35,7 @@ use Webman\ThinkOrm\DbManager;
  * @method static BaseQuery connect(string|null $name = null, bool $force = false) 创建/切换数据库连接查询
  * @method static void setConfig($config) 设置配置对象
  * @method static mixed getConfig(string $name = '', $default = null) 获取配置参数
+ * @method static void setCache($config) 设置缓存对象
  * @method static void setEvent(Event $event) 设置Event对象
  * @method static void event(string $event, callable $callback) 注册回调方法
  * @method static mixed trigger(string $event, $params = null, bool $once = false) 触发事件

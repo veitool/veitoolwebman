@@ -612,10 +612,10 @@ class Service
      * 获取插件类的类名
      * @param  string  $name  插件名
      * @param  string  $type  获取类型 controller,hook
-     * @param  string  $class 当前类名
+     * @param  string|null  $class 当前类名
      * @return string
      */
-    public static function getAddonClass(string $name, string $type = '', string $class = null)
+    public static function getAddonClass(string $name, string $type = '', string|null $class = null)
     {
         $name = parse_name($name);
         if(!is_null($class) && strpos($class, '.')){

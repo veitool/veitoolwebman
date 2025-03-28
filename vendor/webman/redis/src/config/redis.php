@@ -18,7 +18,6 @@ return [
         'host' => '127.0.0.1',
         'port' => 6379,
         'database' => 0,
-        // Connection pool, supports only Swoole or Swow drivers.
         'pool' => [
             'max_connections' => 5,
             'min_connections' => 1,

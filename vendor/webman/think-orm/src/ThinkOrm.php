@@ -2,9 +2,11 @@
 
 namespace Webman\ThinkOrm;
 
+use think\Container;
 use think\Paginator;
 use support\think\Db;
 use Webman\Bootstrap;
+use support\think\Cache;
 
 class ThinkOrm implements Bootstrap
 {
@@ -28,12 +30,14 @@ class ThinkOrm implements Bootstrap
             return;
         }
 
-        if (!class_exists(\think\facade\Db::class, false)) {
-            class_alias(\support\think\Db::class, \think\facade\Db::class);
-        }
+        Container::getInstance()->bind('think\DbManager', DbManager::class);
 
         // 配置
         Db::setConfig($config);
+
+        if (class_exists(Cache::class)) {
+            Db::setCache(Cache::store());
+        }
 
         Paginator::currentPageResolver(function ($pageName = 'page') {
             $request = request();
@@ -48,7 +52,7 @@ class ThinkOrm implements Bootstrap
         });
 
         // 设置分页url中域名与参数之间的path字符串
-        Paginator::currentPathResolver(function (){
+        Paginator::currentPathResolver(function () {
             $request = request();
             return $request ? $request->path() : '/';
         });

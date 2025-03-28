@@ -20,8 +20,8 @@ class ComposerStaticInit691f538563ac6695008ddc51b7722c80
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
         'd2136ff22b54ac75cd96a40e0022218e' => __DIR__ . '/..' . '/workerman/webman-framework/src/support/helpers.php',
-        'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         '9b552a3cc426e3287cc811caefa3cf53' => __DIR__ . '/..' . '/topthink/think-helper/src/helper.php',
+        'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         '7448f3465e10b5f033e4babb31eb0b06' => __DIR__ . '/..' . '/topthink/think-orm/src/helper.php',
         '35fab96057f1bf5e7aba31a8a6d5fdde' => __DIR__ . '/..' . '/topthink/think-orm/stubs/load_stubs.php',
         'ef65a1626449d89d0811cf9befce46f0' => __DIR__ . '/..' . '/illuminate/events/functions.php',
@@ -171,15 +171,16 @@ class ComposerStaticInit691f538563ac6695008ddc51b7722c80
         array (
             0 => __DIR__ . '/..' . '/topthink/think-helper/src',
             1 => __DIR__ . '/..' . '/topthink/think-image/src',
-            2 => __DIR__ . '/..' . '/topthink/think-orm/src',
-            3 => __DIR__ . '/..' . '/topthink/think-template/src',
+            2 => __DIR__ . '/..' . '/topthink/think-template/src',
+            3 => __DIR__ . '/..' . '/topthink/think-container/src',
+            4 => __DIR__ . '/..' . '/topthink/think-orm/src',
         ),
         'support\\' => 
         array (
-            0 => __DIR__ . '/..' . '/webman/think-orm/src/support',
+            0 => __DIR__ . '/..' . '/webman/cache/src/support',
             1 => __DIR__ . '/..' . '/workerman/webman-framework/src/support',
-            2 => __DIR__ . '/..' . '/webman/cache/src/support',
-            3 => __DIR__ . '/..' . '/webman/redis/src/support',
+            2 => __DIR__ . '/..' . '/webman/redis/src/support',
+            3 => __DIR__ . '/..' . '/webman/think-orm/src/support',
         ),
         'app\\View\\Components\\' => 
         array (
@@ -211,8 +212,8 @@ class ComposerStaticInit691f538563ac6695008ddc51b7722c80
         ),
         'Workerman\\' => 
         array (
-            0 => __DIR__ . '/..' . '/workerman/workerman/src',
-            1 => __DIR__ . '/..' . '/workerman/coroutine/src',
+            0 => __DIR__ . '/..' . '/workerman/coroutine/src',
+            1 => __DIR__ . '/..' . '/workerman/workerman/src',
         ),
         'Webman\\ThinkOrm\\' => 
         array (
@@ -381,10 +382,10 @@ class ComposerStaticInit691f538563ac6695008ddc51b7722c80
         ),
         'Illuminate\\Support\\' => 
         array (
-            0 => __DIR__ . '/..' . '/illuminate/support',
-            1 => __DIR__ . '/..' . '/illuminate/macroable',
-            2 => __DIR__ . '/..' . '/illuminate/conditionable',
-            3 => __DIR__ . '/..' . '/illuminate/collections',
+            0 => __DIR__ . '/..' . '/illuminate/macroable',
+            1 => __DIR__ . '/..' . '/illuminate/conditionable',
+            2 => __DIR__ . '/..' . '/illuminate/collections',
+            3 => __DIR__ . '/..' . '/illuminate/support',
         ),
         'Illuminate\\Redis\\' => 
         array (
