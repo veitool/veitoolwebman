@@ -69,7 +69,7 @@ class SystemRoles extends Base
                         $str .= $v['role_url'] ? ','.$v['role_url'] : '';
                     }
                 }
-            }else{
+            }elseif(empty($ro)){
                 Cache::delete($key);
                 return [];
             }
