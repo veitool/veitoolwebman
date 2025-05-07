@@ -23,6 +23,7 @@ use Workerman\Events\Ev;
 use Workerman\Events\Event;
 use Workerman\Events\EventInterface;
 use Workerman\Events\Select;
+use Workerman\Protocols\Http;
 use Workerman\Protocols\Http\Request;
 use Workerman\Protocols\ProtocolInterface;
 use Workerman\Worker;
@@ -345,14 +346,6 @@ class TcpConnection extends ConnectionInterface implements JsonSerializable
      */
     public static array $connections = [];
 
-
-    /**
-     * Reuse request.
-     *
-     * @var bool
-     */
-    protected static bool $reuseRequest = false;
-
     /**
      * Status to string.
      *
@@ -668,8 +661,9 @@ class TcpConnection extends ConnectionInterface implements JsonSerializable
             if ($this->recvBuffer === '') {
                 if (!isset($buffer[static::MAX_CACHE_STRING_LENGTH]) && isset($requests[$buffer])) {
                     ++self::$statistics['total_request'];
-                    $request = $requests[$buffer];
-                    if ($request instanceof Request) {
+                    if ($this->protocol === Http::class) {
+                        $request = clone $requests[$buffer];
+                        $request->destroy();
                         $request->connection = $this;
                         $this->request = $request;
                         try {
@@ -677,10 +671,9 @@ class TcpConnection extends ConnectionInterface implements JsonSerializable
                         } catch (Throwable $e) {
                             $this->error($e);
                         }
-                        $request->destroy();
-                        $requests[$buffer] = static::$reuseRequest ? $request : clone $request;
                         return;
                     }
+                    $request = $requests[$buffer];
                     try {
                         ($this->onMessage)($this, $request);
                     } catch (Throwable $e) {
@@ -747,8 +740,8 @@ class TcpConnection extends ConnectionInterface implements JsonSerializable
                     if ((!is_object($request) || $request instanceof Request) && $one && !isset($oneRequestBuffer[static::MAX_CACHE_STRING_LENGTH])) {
                         ($this->onMessage)($this, $request);
                         if ($request instanceof Request) {
-                            $request->destroy();
                             $requests[$oneRequestBuffer] = clone $request;
+                            $requests[$oneRequestBuffer]->destroy();
                         } else {
                             $requests[$oneRequestBuffer] = $request;
                         }
@@ -1080,16 +1073,6 @@ class TcpConnection extends ConnectionInterface implements JsonSerializable
             $this->worker = null;
             unset(static::$connections[$this->realId]);
         }
-    }
-
-    /**
-     * Init.
-     *
-     * @return void
-     */
-    public static function init(): void
-    {
-        static::$reuseRequest = in_array(get_class(Worker::$globalEvent), [Event::class, Select::class, Ev::class]);
     }
 
     /**

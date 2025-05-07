@@ -32,7 +32,7 @@ class SystemSequence extends Base
      */
     public function listQuery(array $where = [], string $fields = '*', array|string $order = [], int $limit = 0)
     {
-        $d = request()->get(null,'','strip_sql');
+        $d = request()->get();
         $limit = $limit > 0 ? $limit : (isset($d['limit']) ? intval($d['limit']) : 10);
         return $this->where($where)->field($fields)->order($order)->paginate($limit);
     }

@@ -4,6 +4,7 @@ declare (strict_types = 1);
 
 namespace Webman\ThinkOrm;
 
+use MongoDB\Driver\Command;
 use Webman\Context;
 use Workerman\Coroutine\Pool;
 use Throwable;
@@ -51,6 +52,11 @@ class DbManager extends \think\DbManager
                     $this->closeConnection($connection);
                 });
                 $pool->setHeartbeatChecker(function ($connection) {
+                    if ($connection->getConfig('type') === 'mongo') {
+                        $command = new Command(['ping' => 1]);
+                        $connection->command($command);
+                        return;
+                    }
                     $connection->query('select 1');
                 });
                 static::$pools[$name] = $pool;

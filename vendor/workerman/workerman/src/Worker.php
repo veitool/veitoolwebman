@@ -60,7 +60,7 @@ class Worker
      *
      * @var string
      */
-    final public const VERSION = '5.1.0';
+    final public const VERSION = '5.1.1';
 
     /**
      * Status initial.
@@ -872,6 +872,7 @@ class Worker
             // Listen.
             if (!$worker->reusePort) {
                 $worker->listen();
+                $worker->pauseAccept();
             }
         }
     }
@@ -1729,9 +1730,6 @@ class Worker
             // Init Timer.
             Timer::init(static::$globalEvent);
 
-            // Init TcpConnection.
-            TcpConnection::init();
-
             restore_error_handler();
 
             static::setProcessTitle('WorkerMan: worker process  ' . $worker->name . ' ' . $worker->getSocketName());
@@ -2180,9 +2178,6 @@ class Worker
             return;
         }
 
-        // For child processes.
-        gc_collect_cycles();
-        gc_mem_caches();
         reset(static::$workers);
         /** @var static $worker */
         $worker = current(static::$workers);
