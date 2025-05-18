@@ -49,7 +49,7 @@ class MysqlBackup
         $this->config['path'] = ROOT_PATH . 'backup'. VT_DS .'database'. VT_DS;
         $this->config = array_merge($this->config, $config);
         //初始化数据库连接参数
-        $this->dbconfig = config('thinkorm.connections.' . config('thinkorm.default'));
+        $this->dbconfig = config('think-orm.connections.' . config('think-orm.default'));
         //检查文件是否可写
         if (!$this->checkPath($this->config['path'])) {
             throw new \Exception("The current directory is not writable");
@@ -71,7 +71,7 @@ class MysqlBackup
      * @param  int      $type    有传入表名时获取的类型
      * @return array
      */
-    public function dataList(string $table = null, int $type = 1)
+    public function dataList(?string $table = null, int $type = 1)
     {
         $db = self::connect();
         if(is_null($table)){
@@ -496,7 +496,7 @@ class MysqlBackup
      * @param   string/array  $tables  数据表名
      * @return  mixed
      */
-    public function optimize(string|array $tables = null)
+    public function optimize(string|array $tables = '')
     {
         if($tables){
             $db = self::connect();
@@ -519,7 +519,7 @@ class MysqlBackup
      * @param    string/array   $tables   数据表名
      * @return   array/json
      */
-    public function repair(string|array $tables = null)
+    public function repair(string|array $tables = '')
     {
         if($tables){
             $db = self::connect();
@@ -567,7 +567,7 @@ class MysqlBackup
      * @param   string   $path   文件夹路径
      * @return  bool
      */
-    protected function checkPath(string $path = null)
+    protected function checkPath(string $path = '')
     {
         if(is_dir($path)){
             return true;
