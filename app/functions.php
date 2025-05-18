@@ -510,3 +510,31 @@ function get_package_version(string $package)
     }
     return substr($packages['versions'][$package]['version'] ?? 'unknown  ', 0, -2);
 }
+
+/**
+ * 生成单据号
+ * @param  string  $code   单据标识
+ * @param  string  $spr    拼接范式
+ * @param  string  $start  起始范式
+ * @return string
+ */
+function build_bill_no(string $code, string $spr = "-%03d", string $start = "-001")
+{
+    $day = strtotime(date('Y-m-d'));
+    $rs  = \think\facade\Db::name('system_sequence')->where('code',$code)->find();
+    if($rs){
+        $str = $rs['prefix'] . date("Ymd", $day);
+        if ($rs['day'] == $day) {
+            $str .= sprintf($spr, $rs['seq']);
+            $rs['seq'] ++;
+        } else {
+            $str .= $start;
+            $rs['seq'] = 2;
+            $rs['day'] = $day;
+        }
+        \think\facade\Db::name('system_sequence')->save($rs);
+        return $str;
+    }else{
+        return '??' . date("Ymd", $day) . '001';
+    }
+}
