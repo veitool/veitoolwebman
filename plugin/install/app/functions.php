@@ -114,7 +114,7 @@ USERNAME = ~db_user~
 PASSWORD = ~db_pwd~
 HOSTPORT = ~db_port~
 PREFIX   = ~db_pre~
-CHARSET  = utf8
+CHARSET  = utf8mb4
 DEBUG    = true
 
 [CACHE]
