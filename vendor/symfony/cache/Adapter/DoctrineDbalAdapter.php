@@ -338,17 +338,17 @@ class DoctrineDbalAdapter extends AbstractAdapter implements PruneableInterface
     /**
      * @internal
      */
-    protected function getId(mixed $key): string
+    protected function getId(mixed $key, ?string $namespace = null): string
     {
         if ('pgsql' !== $this->platformName ??= $this->getPlatformName()) {
-            return parent::getId($key);
+            return parent::getId($key, $namespace);
         }
 
         if (str_contains($key, "\0") || str_contains($key, '%') || !preg_match('//u', $key)) {
             $key = rawurlencode($key);
         }
 
-        return parent::getId($key);
+        return parent::getId($key, $namespace);
     }
 
     private function getPlatformName(): string
@@ -359,9 +359,16 @@ class DoctrineDbalAdapter extends AbstractAdapter implements PruneableInterface
 
         $platform = $this->conn->getDatabasePlatform();
 
+        if (interface_exists(DBALException::class)) {
+            // DBAL 4+
+            $sqlitePlatformClass = 'Doctrine\DBAL\Platforms\SQLitePlatform';
+        } else {
+            $sqlitePlatformClass = 'Doctrine\DBAL\Platforms\SqlitePlatform';
+        }
+
         return $this->platformName = match (true) {
             $platform instanceof \Doctrine\DBAL\Platforms\AbstractMySQLPlatform => 'mysql',
-            $platform instanceof \Doctrine\DBAL\Platforms\SqlitePlatform => 'sqlite',
+            $platform instanceof $sqlitePlatformClass => 'sqlite',
             $platform instanceof \Doctrine\DBAL\Platforms\PostgreSQLPlatform => 'pgsql',
             $platform instanceof \Doctrine\DBAL\Platforms\OraclePlatform => 'oci',
             $platform instanceof \Doctrine\DBAL\Platforms\SQLServerPlatform => 'sqlsrv',

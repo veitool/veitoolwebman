@@ -34,7 +34,7 @@ class DbManager extends \think\DbManager
      * @return ConnectionInterface
      * @throws Throwable
      */
-    protected function instance(?string $name = null, bool $force = false): ConnectionInterface
+    protected function instance(array|string|null $name = null, bool $force = false): ConnectionInterface
     {
         if (empty($name)) {
             $name = $this->getConfig('default', 'mysql');
