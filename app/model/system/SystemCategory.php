@@ -17,6 +17,17 @@ use app\model\Base;
 class SystemCategory extends Base
 {
     /**
+     * 启用软删除操作
+     */
+    use \think\model\concern\SoftDelete; /**/
+
+    /* *
+     * 全局已开启自动时间戳，取消注释则会关闭该模型
+     * @var bool
+     * /
+    protected $autoWriteTimestamp = false; /**/
+
+    /**
      *定义主键
      * @var string 
      */
@@ -61,24 +72,22 @@ class SystemCategory extends Base
     public static function cadd(string $type = '', array $d = [])
     {
         if(!$d['title']) return ['msg'=>'请输入类别名称'];
+        $d['creator'] = $d['creator'] ?? '';
         $d['type'] = $type;
         $d['listorder'] = intval($d['listorder']);
         $d['parentid']  = intval($d['parentid']);
         $rs = self::one("catid = $d[parentid]");
-        $d['arrparentid'] = $rs ? ($rs['arrparentid'] ? $rs['arrparentid'].','.$rs['catid'] : $rs['catid']) : '';//echo '<pre>';print_r($d);die;
-        $rs = self::insert($d);
-        if($rs){
-            $rs = list_tree(self::catList($type),0,['catid','parentid','title']);
-            return ['msg'=>'添加类别成功','code'=>1, 'data'=>$rs];
-        }else{
-            return ['msg'=>'添加类别失败'];
-        }
+        $d['arrparentid'] = $rs ? ($rs['arrparentid'] ? $rs['arrparentid'].','.$rs['catid'] : $rs['catid']) : '';
+        self::create($d);
+        $rs = list_tree(self::catList($type),0,['catid','parentid','title']);
+        return ['msg'=>'添加类别成功','code'=>1, 'data'=>$rs];
     }
 
     /**
      * 类别编辑
      * @param  string   $do     快编
      * @param  string   $type   标识
+     * @param  array    $d      数据
      * @return array
      */
     public static function cedit(string $do = '', string $type = '', array $d = [])
@@ -92,8 +101,7 @@ class SystemCategory extends Base
             $field = $d['af'];
             if(!in_array($field,['sign','listorder'])) return ['msg'=>'参数错误'];
             if($field == 'listorder') $value = intval($value);
-            $rs = $Myobj->save([$field=>$value]);
-            if($rs){
+            if($Myobj->save([$field=>$value,'editor'=>$d['editor'] ?? ''])){
                 return ['msg'=>'设置成功','code'=>1, 'data'=>list_tree(self::catList($type),0,['catid','parentid','title'])];
             }else{
                 return ['msg'=>'设置失败'];
@@ -128,8 +136,7 @@ class SystemCategory extends Base
             }
             unset($d['av'],$d['af']);
             $d['listorder'] = intval($d['listorder']);
-            $rs = $Myobj->save($d);
-            if($rs){
+            if($Myobj->save($d)){
                 if($arr) (new self)->saveAll($arr);
                 return ['msg'=>'编辑成功','code'=>1, 'data'=>list_tree(self::catList($type),0,['catid','parentid','title'])];
             }else{
@@ -148,7 +155,9 @@ class SystemCategory extends Base
     {
         $catid = is_array($catid) ? implode(',',$catid) : $catid;
         if(!$catid) return ['msg'=>'参数错误'];
-        $rs = self::del("CONCAT(',',CONCAT(arrparentid,',')) LIKE '%,{$catid},%' OR catid IN($catid)");
+        $rs = self::destroy(function($query)use($catid){
+            $query->where("CONCAT(',',CONCAT(arrparentid,',')) LIKE '%,{$catid},%' OR catid IN({$catid})");
+        });
         if($rs){
             return ['msg'=>'删除成功','code'=>1, 'data'=>list_tree(self::catList($type),0,['catid','parentid','title'])];
         }else{

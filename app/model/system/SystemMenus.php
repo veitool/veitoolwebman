@@ -21,6 +21,11 @@ use support\Cache;
 class SystemMenus extends Base
 {
     /**
+     * 启用软删除操作
+     */
+    use \think\model\concern\SoftDelete; /**/
+
+    /**
      *定义主键
      * @var string 
      */

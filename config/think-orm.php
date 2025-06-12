@@ -2,6 +2,15 @@
 
 return [
     'default' => genv('database.driver', 'mysql'),
+
+    // 自动写入时间戳字段
+    // true为自动识别类型 false关闭
+    // 字符串则明确指定时间字段类型 支持 int timestamp datetime date
+    'auto_timestamp'  => 'int',
+
+    // 时间字段取出后的默认时间格式
+    'datetime_format' => false, //'Y-m-d H:i:s',
+ 
     'connections' => [
         'mysql' => [
             // 数据库类型

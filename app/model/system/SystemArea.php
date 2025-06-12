@@ -18,6 +18,17 @@ use support\Cache;
 class SystemArea extends Base
 {
     /**
+     * 启用软删除操作
+     */
+    use \think\model\concern\SoftDelete; /**/
+
+    /* *
+     * 全局已开启自动时间戳，取消注释则会关闭该模型
+     * @var bool
+     * /
+    protected $autoWriteTimestamp = false; /**/
+
+    /**
      * 定义主键
      * @var string 
      */
