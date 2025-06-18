@@ -49,7 +49,7 @@ if (!defined('BASE_PATH')) {
     define('BASE_PATH', realpath($basePath) ?: $basePath);
 
     // 版本信息
-    define('VT_VERSION', '2.2.3');
+    define('VT_VERSION', '2.3.0');
     // 后台管理员 session 标识
     define('VT_MANAGER', 'V_MANAGER');
     // 前台会员 session 标识
