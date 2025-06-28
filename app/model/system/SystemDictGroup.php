@@ -37,7 +37,7 @@ class SystemDictGroup extends Base
      */
     public function listQuery(array $where = [], string $fields = '', int $limit = 0, array|string $order = ['id'=>'asc'])
     {
-        $d = request()->get();
+        $d = request()->get('', '', 'strip_sql');
         $kw = $d['kw'] ?? '';
         $fds = ['title','code','sql','editor','note'];
         $field = isset($d['fields']) && isset($fds[$d['fields']]) ? $d['fields'] : -1;

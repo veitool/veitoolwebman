@@ -113,39 +113,35 @@ class Request implements Stringable
     public function __construct(protected string $buffer) {}
 
     /**
-     * Get query.
+     * Get query. 支持 get('a/d') get(['a/d'=>'默认值'])
      *
-     * @param string|null $name
-     * @param mixed $default
+     * @param  string|array|null $name     字段名【为null时则返回原始数据，即使有过滤方法】
+     * @param  mixed             $default  默认值
+     * @param  string|array|null $filter   过滤方法
      * @return mixed
      */
-    public function get(?string $name = null, mixed $default = null): mixed
+    public function get(string | array | null $name = null, mixed $default = null, string | array | null $filter = ''): mixed
     {
         if (!isset($this->data['get'])) {
             $this->parseGet();
         }
-        if (null === $name) {
-            return $this->data['get'];
-        }
-        return $this->data['get'][$name] ?? $default;
+        return $this->handData($this->data['get'], $name, $default, $filter);
     }
 
     /**
-     * Get post.
+     * Get post. 支持 post('a/d') post(['a/d'=>'默认值'])
      *
-     * @param string|null $name
-     * @param mixed $default
+     * @param  string|array|null $name     字段名【为null时则返回原始数据，即使有过滤方法】
+     * @param  mixed             $default  默认值
+     * @param  string|array|null $filter   过滤方法
      * @return mixed
      */
-    public function post(?string $name = null, mixed $default = null): mixed
+    public function post(string | array | null $name = null, mixed $default = null, string | array | null $filter = ''): mixed
     {
         if (!isset($this->data['post'])) {
             $this->parsePost();
         }
-        if (null === $name) {
-            return $this->data['post'];
-        }
-        return $this->data['post'][$name] ?? $default;
+        return $this->handData($this->data['post'], $name, $default, $filter);
     }
 
     /**
@@ -678,6 +674,140 @@ class Request implements Stringable
             . (empty($cookieParams['samesite']) ? '' : '; SameSite=' . $cookieParams['samesite'])
             . (!$cookieParams['secure'] ? '' : '; Secure')
             . (!$cookieParams['httponly'] ? '' : '; HttpOnly')];
+    }
+
+    /**
+     * 处理数据【增加的】
+     * @param  array              $data     数据源
+     * @param  string|array|null  $name     字段名
+     * @param  mixed              $default  默认值
+     * @param  string|array|null  $filter   过滤方法
+     * @return mixed
+     */
+    protected function handData($data, $name, $default, $filter)
+    {
+        if (is_array($name)) {
+            $item = [];
+            foreach ($name as $key => $val) {
+                $type = '';
+                if (is_int($key)) {
+                    if (str_contains($val, '/')) {
+                        [$val, $type] = explode('/', $val);
+                    }
+                    $default = null;
+                    $key     = $val;
+                    if (!key_exists($key, $data)) {
+                        continue;
+                    }
+                } else {
+                    if (str_contains($key, '/')) {
+                        [$key, $type] = explode('/', $key);
+                    }
+                    $default = $val;
+                }
+                $item[$key] = $this->filterData($data[$key] ?? $default, $filter, $key, $default, $type);
+            }
+            return $item;
+        } elseif ($name === null) {
+            return $data;
+        } else {
+            $name = (string) $name;
+            if ('' != $name) {
+                if (str_contains($name, '/')) {
+                    [$name, $type] = explode('/', $name);
+                }
+                $data = $data[$name] ?? $default;
+            }
+            return $this->filterData($data, $filter, $name, $default, $type ?? '');
+        }
+    }
+
+    /**
+     * 数据过滤转换【增加的】
+     * @param  array             $data     数据源
+     * @param  string|array|null $filter   过滤函数
+     * @param  string|false      $name     字段名
+     * @param  mixed             $default  默认值
+     * @param  string            $type     转换类型标识
+     * @return mixed
+     */
+    protected function filterData($data, $filter, $name, $default, $type)
+    {
+        if (is_null($data)) {
+            return $default;
+        }
+        if (is_object($data)) {
+            return $data;
+        }
+        //解析过滤器
+        if (is_null($filter)) {
+            $filter = [];
+        } else {
+            $filter = $filter ?: $this->filter;
+            if (is_string($filter) && !str_contains($filter, '/')) {
+                $filter = explode(',', $filter);
+            } else {
+                $filter = (array) $filter;
+            }
+        }
+        $filter[] = $default;
+        if (is_array($data)) {
+            array_walk_recursive($data, [$this, 'filterValue'], $filter);
+        } else {
+            $this->filterValue($data, $name, $filter);
+        }
+        if ($type) {
+            // 强制类型转换
+            $data = match (strtolower($type)) {
+                'a'     => (array) $data,
+                'b'     => (bool) $data,
+                'd'     => (int) $data,
+                'f'     => (float) $data,
+                's'     => is_scalar($data) ? (string) $data : throw new \InvalidArgumentException('variable type error：' . gettype($data)),
+                default => $data,
+            };
+        }
+        return $data;
+    }
+
+    /**
+     * 递归过滤给定的值【增加的】
+     * @access public
+     * @param  mixed  $value   键值
+     * @param  mixed  $key     键名
+     * @param  array  $filters 过滤方法+默认值
+     * @return mixed
+     */
+    public function filterValue(&$value, $key, $filters)
+    {
+        $default = array_pop($filters);
+        foreach ($filters as $filter) {
+            if (is_callable($filter)) {
+                // 调用函数或者方法过滤
+                if (is_null($value)) {
+                    continue;
+                }
+                $value = call_user_func($filter, $value);
+            } elseif (is_scalar($value)) {
+                if (is_string($filter) && str_contains($filter, '/')) {
+                    // 正则过滤
+                    if (!preg_match($filter, $value)) {
+                        // 匹配不成功返回默认值
+                        $value = $default;
+                        break;
+                    }
+                } elseif (!empty($filter)) {
+                    // filter函数不存在时, 则使用filter_var进行过滤
+                    // filter为非整形值时, 调用filter_id取得过滤id
+                    $value = filter_var($value, is_int($filter) ? $filter : filter_id($filter));
+                    if (false === $value) {
+                        $value = $default;
+                        break;
+                    }
+                }
+            }
+        }
+        return $value;
     }
 
     /**

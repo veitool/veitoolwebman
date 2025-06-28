@@ -59,7 +59,7 @@ class ExitMsg extends BusinessException
      * @param array    $headers   头部信息组
      * 
      */
-    public function __construct(string $msg, string $tpl = null, int $code = 302, array $data = [], array $headers = [])
+    public function __construct(string $msg, ?string $tpl = null, int $code = 302, array $data = [], array $headers = [])
     {
         $this->msg     = $msg;
         $this->tpl     = $tpl;

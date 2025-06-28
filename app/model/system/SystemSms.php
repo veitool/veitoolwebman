@@ -37,7 +37,7 @@ class SystemSms extends Base
      */
     public function listQuery(array $where = [], array|string $order = ['id'=>'desc'], string $fields = '*', int $limit = 0)
     {
-        $d = request()->get();
+        $d = request()->get('', '', 'strip_sql');
         $kw = $d['kw'] ?? '';
         $fds = ['mobile','message','editor','code'];
         $field = isset($d['fields']) && isset($fds[$d['fields']]) ? $d['fields'] : -1;

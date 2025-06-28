@@ -37,7 +37,7 @@ class SystemManager extends Base
      */
     public function listQuery(array $where = [], string $fields = '', int $limit = 0, array|string $order = ['userid'=>'asc'])
     {
-        $d = request()->get();
+        $d = request()->get('', '', 'strip_sql');
         $kw = $d['kw'] ?? '';
         $fds = ['username','truename','mobile','loginip'];
         $field = isset($d['fields']) && isset($fds[$d['fields']]) ? $d['fields'] : -1;

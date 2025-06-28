@@ -32,7 +32,7 @@ class SystemWebLog extends Base
      */
     public function listQuery(array $where = [], array|string $order = ['logid'=>'desc'], string $fields = '*', int $limit = 0)
     {
-        $d = request()->get();
+        $d = request()->get('', '', 'strip_sql');
         $kw = $d['kw'] ?? '';
         $fds = ['username','ip','url','agent'];
         $field = isset($d['fields']) && isset($fds[$d['fields']]) ? $d['fields'] : -1;
