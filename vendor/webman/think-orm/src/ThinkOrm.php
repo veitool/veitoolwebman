@@ -36,7 +36,7 @@ class ThinkOrm implements Bootstrap
         Db::setConfig($config);
 
         if (class_exists(Cache::class)) {
-            Db::setCache(Cache::store());
+            Db::setCache(new ThinkCache());
         }
 
         Paginator::currentPageResolver(function ($pageName = 'page') {
@@ -56,5 +56,13 @@ class ThinkOrm implements Bootstrap
             $request = request();
             return $request ? $request->path() : '/';
         });
+
+        // 设置自定义分页类
+        $paginator = $config['paginator'] ?? '';
+        if (!empty($paginator) && class_exists($paginator)) {
+            Paginator::maker(function ($items, $listRows, $currentPage, $total, $simple, $options) use ($paginator) {
+                return new $paginator($items, $listRows, $currentPage, $total, $simple, $options);
+            });
+        }
     }
 }

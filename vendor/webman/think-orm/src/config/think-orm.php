@@ -27,8 +27,6 @@ return [
             'prefix' => '',
             // 断线重连
             'break_reconnect' => true,
-            // 自定义分页类
-            'bootstrap' =>  '',
             // 连接池配置
             'pool' => [
                 'max_connections' => 5, // 最大连接数
@@ -39,4 +37,6 @@ return [
             ],
         ],
     ],
+    // 自定义分页类
+    'paginator' =>  '',
 ];
