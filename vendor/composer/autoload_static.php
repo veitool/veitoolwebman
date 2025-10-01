@@ -173,16 +173,16 @@ class ComposerStaticInit691f538563ac6695008ddc51b7722c80
             0 => __DIR__ . '/..' . '/topthink/think-container/src',
             1 => __DIR__ . '/..' . '/topthink/think-helper/src',
             2 => __DIR__ . '/..' . '/topthink/think-image/src',
-            3 => __DIR__ . '/..' . '/topthink/think-template/src',
-            4 => __DIR__ . '/..' . '/topthink/think-validate/src',
-            5 => __DIR__ . '/..' . '/topthink/think-orm/src',
+            3 => __DIR__ . '/..' . '/topthink/think-orm/src',
+            4 => __DIR__ . '/..' . '/topthink/think-template/src',
+            5 => __DIR__ . '/..' . '/topthink/think-validate/src',
         ),
         'support\\' => 
         array (
             0 => __DIR__ . '/..' . '/webman/cache/src/support',
             1 => __DIR__ . '/..' . '/webman/redis/src/support',
-            2 => __DIR__ . '/..' . '/webman/think-orm/src/support',
-            3 => __DIR__ . '/..' . '/workerman/webman-framework/src/support',
+            2 => __DIR__ . '/..' . '/workerman/webman-framework/src/support',
+            3 => __DIR__ . '/..' . '/webman/think-orm/src/support',
         ),
         'app\\View\\Components\\' => 
         array (
@@ -384,10 +384,10 @@ class ComposerStaticInit691f538563ac6695008ddc51b7722c80
         ),
         'Illuminate\\Support\\' => 
         array (
-            0 => __DIR__ . '/..' . '/illuminate/macroable',
-            1 => __DIR__ . '/..' . '/illuminate/conditionable',
-            2 => __DIR__ . '/..' . '/illuminate/collections',
-            3 => __DIR__ . '/..' . '/illuminate/support',
+            0 => __DIR__ . '/..' . '/illuminate/collections',
+            1 => __DIR__ . '/..' . '/illuminate/support',
+            2 => __DIR__ . '/..' . '/illuminate/macroable',
+            3 => __DIR__ . '/..' . '/illuminate/conditionable',
         ),
         'Illuminate\\Redis\\' => 
         array (

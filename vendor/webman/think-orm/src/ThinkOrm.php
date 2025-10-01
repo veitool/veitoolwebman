@@ -25,7 +25,7 @@ class ThinkOrm implements Bootstrap
         }
         self::$initialized = true;
 
-        $config = config('think-orm', config('thinkorm'));
+        $config = array_replace_recursive(config('thinkorm', []), config('think-orm', []));
         if (!$config) {
             return;
         }
