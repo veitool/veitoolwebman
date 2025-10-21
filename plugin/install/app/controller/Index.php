@@ -54,7 +54,7 @@ class Index extends BaseController
     {
         $this->assign([
             'isOK' => true, // 初始通过
-            'iswrite_array' => ['/.env'], // 检测是否可写的路径
+            'iswrite_array' => [['/.env',644],['/runtime/',755],['/plugin/install/',755],['/public/static/file/',755]], // 检测是否可写的路径
             'exists_array'  => ['curl_init', 'bcadd', 'mb_substr', 'simplexml_load_string'], // 获取检测的函数数据
             'extendArray'   => getExtendArray(), // 获取扩展要求数据
         ]);

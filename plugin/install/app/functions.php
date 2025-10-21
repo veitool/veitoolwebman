@@ -8,12 +8,17 @@ function setOk($val)
 }
 
 // 测试可写性
-function isWrite($file)
+function isWrite($path, $i = 0)
 {
-    if(is_writable(base_path() .$file)){
-        echo '<b class="green">可写</b>';
-    }else{
-        echo '<span>不可写</span>';
+    if (!@file_exists(base_path() . $path)) {
+        $perms = 0;
+    } else {
+        $perms = (int)substr(sprintf('%o', @fileperms(base_path() . $path)), -3);
+    }
+    if ($perms >= $i) {
+        echo '<b class="green">符合('.$perms.')</b>';
+    } else {
+        echo '<span>不符合('.$perms.')</span>';
         setOk(false);
     }
 }
