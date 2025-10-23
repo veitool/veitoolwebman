@@ -80,7 +80,7 @@ class Menus
      */
     public static function menuOut(int $menuid = 0, string|array $where = '')
     {
-        global $_MES;
+        static $_MES;
         $_MES = $_MES ?: M::where($where)->order(['listorder'=>'asc','menuid'=>'asc'])->column('*');
         $data = [];
         foreach ($_MES as $v){
