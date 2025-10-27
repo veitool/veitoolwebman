@@ -18,11 +18,11 @@ namespace Workerman\Coroutine;
 
 use Closure;
 use Psr\Log\LoggerInterface;
-use RuntimeException;
 use stdClass;
 use Throwable;
 use WeakMap;
 use Workerman\Coroutine;
+use Workerman\Coroutine\Exception\PoolException;
 use Workerman\Coroutine\Utils\DestructionWatcher;
 use Workerman\Timer;
 use Workerman\Worker;
@@ -190,7 +190,7 @@ class Pool implements PoolInterface
         }
         $connection = $this->channel->pop($this->waitTimeout);
         if (!$connection) {
-            throw new RuntimeException("Failed to get a connection from the pool within the wait timeout ($this->waitTimeout seconds). The connection pool is exhausted.");
+            throw new PoolException("Failed to get a connection from the pool within the wait timeout ($this->waitTimeout seconds). The connection pool is exhausted.");
         }
         $this->lastUsedTimes[$connection] = time();
         return $connection;
@@ -208,7 +208,7 @@ class Pool implements PoolInterface
         // This connection does not belong to the connection pool.
         // It may have been closed by $this->closeConnection($connection).
         if (!isset($this->connections[$connection])) {
-            throw new RuntimeException('The connection does not belong to the connection pool.');
+            throw new PoolException('The connection does not belong to the connection pool.');
         }
         if ($connection === $this->nonCoroutineConnection) {
             return;
@@ -241,7 +241,7 @@ class Pool implements PoolInterface
     public function createConnection(): object
     {
         if ($this->getConnectionCount() >= $this->maxConnections) {
-            throw new RuntimeException('CreateConnection failed, maximum connection limit reached.');
+            throw new PoolException('CreateConnection failed, maximum connection limit reached.');
         }
         // Create a placeholder to ensure the correct value of getConnectionCount().
         $placeholder = new stdClass;
@@ -250,7 +250,7 @@ class Pool implements PoolInterface
             // Coroutines will switch here, so we need $placeholder to ensure the correct value of getConnectionCount().
             $connection = ($this->connectionCreateHandler)();
             if (!$this->isValidConnection($connection)) {
-                throw new RuntimeException('CreateConnection failed, expected a connection object, but got ' . gettype($connection) . '.');
+                throw new PoolException('CreateConnection failed, expected a connection object, but got ' . gettype($connection) . '.');
             }
             unset($this->connections[$placeholder]);
             $this->connections[$connection] = $this->lastUsedTimes[$connection] = $this->lastHeartbeatTimes[$connection] = time();

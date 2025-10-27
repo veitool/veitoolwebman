@@ -5,11 +5,11 @@ namespace test;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 use Workerman\Coroutine;
+use Workerman\Coroutine\Exception\PoolException;
 use Workerman\Coroutine\Pool;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use stdClass;
-use RuntimeException;
 use Exception;
 use Workerman\Events\Event;
 use Workerman\Events\Select;
@@ -106,7 +106,7 @@ class PoolTest extends TestCase
 
     public function testPutConnectionDoesNotBelong()
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(PoolException::class);
         $this->expectExceptionMessage('The connection does not belong to the connection pool.');
 
         $pool = new Pool(5);

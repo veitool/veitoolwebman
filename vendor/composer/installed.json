@@ -896,8 +896,8 @@
         },
         {
             "name": "illuminate/bus",
-            "version": "v11.46.0",
-            "version_normalized": "11.46.0.0",
+            "version": "v11.46.1",
+            "version_normalized": "11.46.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/bus.git",
@@ -952,8 +952,8 @@
         },
         {
             "name": "illuminate/collections",
-            "version": "v11.46.0",
-            "version_normalized": "11.46.0.0",
+            "version": "v11.46.1",
+            "version_normalized": "11.46.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/collections.git",
@@ -1011,8 +1011,8 @@
         },
         {
             "name": "illuminate/conditionable",
-            "version": "v11.46.0",
-            "version_normalized": "11.46.0.0",
+            "version": "v11.46.1",
+            "version_normalized": "11.46.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/conditionable.git",
@@ -1060,8 +1060,8 @@
         },
         {
             "name": "illuminate/container",
-            "version": "v11.46.0",
-            "version_normalized": "11.46.0.0",
+            "version": "v11.46.1",
+            "version_normalized": "11.46.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/container.git",
@@ -1114,8 +1114,8 @@
         },
         {
             "name": "illuminate/contracts",
-            "version": "v11.46.0",
-            "version_normalized": "11.46.0.0",
+            "version": "v11.46.1",
+            "version_normalized": "11.46.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/contracts.git",
@@ -1165,8 +1165,8 @@
         },
         {
             "name": "illuminate/events",
-            "version": "v11.46.0",
-            "version_normalized": "11.46.0.0",
+            "version": "v11.46.1",
+            "version_normalized": "11.46.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/events.git",
@@ -1223,8 +1223,8 @@
         },
         {
             "name": "illuminate/macroable",
-            "version": "v11.46.0",
-            "version_normalized": "11.46.0.0",
+            "version": "v11.46.1",
+            "version_normalized": "11.46.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/macroable.git",
@@ -1272,8 +1272,8 @@
         },
         {
             "name": "illuminate/pipeline",
-            "version": "v11.46.0",
-            "version_normalized": "11.46.0.0",
+            "version": "v11.46.1",
+            "version_normalized": "11.46.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/pipeline.git",
@@ -1323,8 +1323,8 @@
         },
         {
             "name": "illuminate/redis",
-            "version": "v11.46.0",
-            "version_normalized": "11.46.0.0",
+            "version": "v11.46.1",
+            "version_normalized": "11.46.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/redis.git",
@@ -1380,8 +1380,8 @@
         },
         {
             "name": "illuminate/support",
-            "version": "v11.46.0",
-            "version_normalized": "11.46.0.0",
+            "version": "v11.46.1",
+            "version_normalized": "11.46.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/support.git",
@@ -4718,17 +4718,17 @@
         },
         {
             "name": "workerman/coroutine",
-            "version": "v1.1.3",
-            "version_normalized": "1.1.3.0",
+            "version": "v1.1.4",
+            "version_normalized": "1.1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/workerman-php/coroutine.git",
-                "reference": "df8fc428967d512a74a8a7d80355c1d40228c9fa"
+                "reference": "b0bebfa9d41b992ad0a835ddf2ee8fa5d58eca44"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/workerman-php/coroutine/zipball/df8fc428967d512a74a8a7d80355c1d40228c9fa",
-                "reference": "df8fc428967d512a74a8a7d80355c1d40228c9fa",
+                "url": "https://api.github.com/repos/workerman-php/coroutine/zipball/b0bebfa9d41b992ad0a835ddf2ee8fa5d58eca44",
+                "reference": "b0bebfa9d41b992ad0a835ddf2ee8fa5d58eca44",
                 "shasum": ""
             },
             "require": {
@@ -4738,7 +4738,7 @@
                 "phpunit/phpunit": "^11.0",
                 "psr/log": "*"
             },
-            "time": "2025-02-17T03:34:21+00:00",
+            "time": "2025-10-11T15:09:08+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -4754,7 +4754,7 @@
             "description": "Workerman coroutine",
             "support": {
                 "issues": "https://github.com/workerman-php/coroutine/issues",
-                "source": "https://github.com/workerman-php/coroutine/tree/v1.1.3"
+                "source": "https://github.com/workerman-php/coroutine/tree/v1.1.4"
             },
             "install-path": "../workerman/coroutine"
         },
@@ -5017,17 +5017,17 @@
         },
         {
             "name": "workerman/workerman",
-            "version": "v5.1.3",
-            "version_normalized": "5.1.3.0",
+            "version": "v5.1.4",
+            "version_normalized": "5.1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/walkor/workerman.git",
-                "reference": "371f3a5decb28f1bd3464ae26d47ea1a4cf0a3c5"
+                "reference": "ff4e17babdc92b16b3252060233c88f6c2e9a61a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/walkor/workerman/zipball/371f3a5decb28f1bd3464ae26d47ea1a4cf0a3c5",
-                "reference": "371f3a5decb28f1bd3464ae26d47ea1a4cf0a3c5",
+                "url": "https://api.github.com/repos/walkor/workerman/zipball/ff4e17babdc92b16b3252060233c88f6c2e9a61a",
+                "reference": "ff4e17babdc92b16b3252060233c88f6c2e9a61a",
                 "shasum": ""
             },
             "require": {
@@ -5047,7 +5047,7 @@
             "suggest": {
                 "ext-event": "For better performance. "
             },
-            "time": "2025-06-12T13:34:04+00:00",
+            "time": "2025-10-12T07:54:18+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {

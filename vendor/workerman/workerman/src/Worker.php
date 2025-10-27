@@ -61,7 +61,7 @@ class Worker
      *
      * @var string
      */
-    final public const VERSION = '5.1.3';
+    final public const VERSION = '5.1.4';
 
     /**
      * Status initial.
@@ -264,7 +264,7 @@ class Worker
      *
      * @var bool
      */
-    protected bool $pauseAccept = true;
+    protected ?bool $pauseAccept = null;
 
     /**
      * Is worker stopping ?
@@ -323,6 +323,13 @@ class Worker
     public static string $logFile = '';
 
     /**
+     * Log file maximum size in bytes, default 10M.
+     *
+     * @var int
+     */
+    public static int $logFileMaxSize = 10_485_760;
+
+    /**
      * Global event loop.
      *
      * @var ?EventInterface
@@ -330,7 +337,7 @@ class Worker
     public static ?EventInterface $globalEvent = null;
 
     /**
-     * Emitted when the master process get reload signal.
+     * Emitted when the master process gets a reload signal.
      *
      * @var ?callable
      */
@@ -743,7 +750,7 @@ class Worker
         // Log file.
         static::$logFile = static::$logFile ?: sprintf('%s/workerman.log', $startFileDir);
 
-        if (static::$logFile !== '/dev/null' && !is_file(static::$logFile)) {
+        if (static::$logFile !== '/dev/null' && !is_file(static::$logFile) && !str_contains(static::$logFile, '://')) {
             // if /runtime/logs  default folder not exists
             if (!is_dir(dirname(static::$logFile))) {
                 mkdir(dirname(static::$logFile), 0777, true);
@@ -872,8 +879,7 @@ class Worker
 
             // Listen.
             if (!$worker->reusePort) {
-                $worker->listen();
-                $worker->pauseAccept();
+                $worker->listen(false);
             }
         }
     }
@@ -1608,7 +1614,6 @@ class Worker
 
             // Display UI.
             static::safeEcho(str_pad($worker->name, 48) . str_pad($worker->getSocketName(), 36) . str_pad('1', 10) . "  [ok]\n");
-            $worker->listen();
             $worker->run();
             static::$globalEvent->run();
             if (static::$status !== self::STATUS_SHUTDOWN) {
@@ -1884,7 +1889,9 @@ class Worker
 
                         // Mark id is available.
                         $id = static::getId($workerId, $pid);
-                        static::$idMap[$workerId][$id] = 0;
+                        if ($id !== false) {
+                            static::$idMap[$workerId][$id] = 0;
+                        }
 
                         break;
                     }
@@ -2342,6 +2349,52 @@ class Worker
         if (isset(static::$logFile)) {
             $pid = DIRECTORY_SEPARATOR === '/' ? posix_getpid() : 1;
             file_put_contents(static::$logFile, sprintf("%s pid:%d %s\n", date('Y-m-d H:i:s'), $pid, $msg), FILE_APPEND | LOCK_EX);
+
+            // Check the file size and truncate if it exceeds max size
+            if (!empty(static::$logFileMaxSize) && ($fileSize = filesize(static::$logFile)) > static::$logFileMaxSize) {
+                // Open files
+                $source = fopen(static::$logFile, 'r');
+
+                if (!$source) {
+                    return;
+                } else if (!flock($source, LOCK_EX)) {
+                    fclose($source);
+                    return;
+                }
+                
+                $newFile = static::$logFile . '.tmp';
+                $destination = fopen($newFile, 'w');
+
+                if (!$destination) {
+                    flock($source, LOCK_UN);
+                    fclose($source);
+                    return;
+                }
+
+                // Move to the halfway point in the source file
+                $halfwayPoint = (int)($fileSize / 2);
+                fseek($source, $halfwayPoint);
+
+                // Find the next newline character to ensure we don't cut in the middle of a line
+                while (($char = fgetc($source)) !== false) {
+                    if ($char === "\n") {
+                        break;
+                    }
+                }
+
+                // Copy the second half into the new file
+                while (!feof($source)) {
+                    fwrite($destination, fread($source, 8192)); // Read and write 8KB chunks
+                }
+
+                // Replace the old file with the new truncated file
+                rename($newFile, static::$logFile);
+                
+                // Close both files
+                flock($source, LOCK_UN);
+                fclose($source);
+                fclose($destination);
+            }
         }
     }
 
@@ -2378,8 +2431,11 @@ class Worker
 
     /**
      * Listen.
+     *
+     * @param bool $autoAccept
+     * @return void
      */
-    public function listen(): void
+    public function listen(bool $autoAccept = true): void
     {
         if (!$this->socketName) {
             return;
@@ -2394,7 +2450,7 @@ class Worker
             $errNo = 0;
             $errMsg = '';
             // SO_REUSEPORT.
-            if ($this->reusePort) {
+            if ($this->reusePort && DIRECTORY_SEPARATOR !== '\\') {
                 stream_context_set_option($this->socketContext, 'socket', 'so_reuseport', 1);
             }
 
@@ -2434,7 +2490,9 @@ class Worker
             stream_set_blocking($this->mainSocket, false);
         }
 
-        $this->resumeAccept();
+        if ($autoAccept) {
+            $this->resumeAccept();
+        }
     }
 
     /**
@@ -2523,7 +2581,7 @@ class Worker
      */
     public function pauseAccept(): void
     {
-        if (static::$globalEvent !== null && $this->pauseAccept === false && $this->mainSocket !== null) {
+        if (static::$globalEvent !== null && !$this->pauseAccept && $this->mainSocket !== null) {
             static::$globalEvent->offReadable($this->mainSocket);
             $this->pauseAccept = true;
         }
@@ -2537,7 +2595,7 @@ class Worker
     public function resumeAccept(): void
     {
         // Register a listener to be notified when server socket is ready to read.
-        if (static::$globalEvent !== null && $this->pauseAccept === true && $this->mainSocket !== null) {
+        if (static::$globalEvent !== null && ($this->pauseAccept === null || $this->pauseAccept === true) && $this->mainSocket !== null) {
             if ($this->transport !== 'udp') {
                 static::$globalEvent->onReadable($this->mainSocket, $this->acceptTcpConnection(...));
             } else {
@@ -2565,7 +2623,7 @@ class Worker
      */
     public function run(): void
     {
-        $this->listen();
+        $this->listen(!$this->onWorkerStart);
 
         if (!$this->onWorkerStart) {
             return;
@@ -2580,19 +2638,20 @@ class Worker
                 sleep(1);
                 static::stopAll(250, $e);
             } finally {
+                if ($this->pauseAccept === null) {
+                    $this->resumeAccept();
+                }
                 Context::destroy();
             }
         };
 
-        switch (Worker::$eventLoopClass) {
-            case Swoole::class:
-            case Swow::class:
-            case Fiber::class:
-                Coroutine::create($callback);
-                break;
-            default:
-                (new \Fiber($callback))->start();
-        }
+        match (Worker::$eventLoopClass) {
+            Swoole::class,
+            Swow::class,
+            Fiber::class => Coroutine::create($callback),
+    
+            default => (new \Fiber($callback))->start(),
+        };
     }
 
     /**

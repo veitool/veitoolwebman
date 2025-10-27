@@ -661,7 +661,7 @@ class TcpConnection extends ConnectionInterface implements JsonSerializable
 
         // Check connection closed.
         if ($buffer === '' || $buffer === false) {
-            if ($checkEof && (feof($socket) || !is_resource($socket) || $buffer === false)) {
+            if ($checkEof && (!is_resource($socket) || feof($socket) || $buffer === false)) {
                 $this->destroy();
                 return;
             }
@@ -835,7 +835,7 @@ class TcpConnection extends ConnectionInterface implements JsonSerializable
      */
     public function doSslHandshake($socket): bool|int
     {
-        if (feof($socket)) {
+        if (!is_resource($socket) || feof($socket)) {
             $this->destroy();
             return false;
         }
@@ -886,19 +886,10 @@ class TcpConnection extends ConnectionInterface implements JsonSerializable
      */
     public function pipe(self $dest): void
     {
-        $source = $this;
-        $this->onMessage = function ($source, $data) use ($dest) {
-            $dest->send($data);
-        };
-        $this->onClose = function () use ($dest) {
-            $dest->close();
-        };
-        $dest->onBufferFull = function () use ($source) {
-            $source->pauseRecv();
-        };
-        $dest->onBufferDrain = function () use ($source) {
-            $source->resumeRecv();
-        };
+        $this->onMessage = fn ($source, $data) => $dest->send($data);
+        $this->onClose = fn () => $dest->close();
+        $dest->onBufferFull = fn () => $this->pauseRecv();
+        $dest->onBufferDrain = fn() => $this->resumeRecv();
     }
 
     /**

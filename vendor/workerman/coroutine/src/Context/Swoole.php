@@ -14,6 +14,9 @@ class Swoole implements ContextInterface
     public static function get(?string $name = null, mixed $default = null): mixed
     {
         $context = Coroutine::getContext();
+        if (!$context) {
+            return $default;
+        }
         $context->setFlags(ArrayObject::ARRAY_AS_PROPS);
         if ($name === null) {
             return $context;
