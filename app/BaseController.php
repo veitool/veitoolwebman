@@ -168,10 +168,10 @@ abstract class BaseController
      * @param   array               $data     数组信息
      * @param   int                 $scode    页头状态码
      * @param   array               $header   头部
-     * @param   array               $options  参数
+     * @param   int                 $options  参数
      * @return  html/json
      */
-    protected final function returnMsg($msg = '', $code = 0, $data = [], $scode = 200, $header = [], $options = [])
+    protected final function returnMsg($msg = '', $code = 0, $data = [], $scode = 200, $header = [], $options = JSON_UNESCAPED_UNICODE)
     {
         $msg = is_object($msg) ? $msg->toArray() : $msg;
         if(is_array($msg)){
@@ -195,7 +195,7 @@ abstract class BaseController
             $this->assign(compact('code', 'msg', 'data', 'count', 'token'));
             return $this->fetch($this->msgTpl);
         }else{
-            return json(compact('code', 'msg', 'data', 'count', 'token'), $scode, $header, $options);
+            return (new \Webman\Http\Response($scode, ['Content-Type' => 'application/json'], json_encode(compact('code', 'msg', 'data', 'count', 'token'), $options)))->withHeaders($header);
         }
     }
 
