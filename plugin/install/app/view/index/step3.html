@@ -35,6 +35,14 @@
                 <div class="layui-input-inline"><input type="password" class="layui-input" name="dbpwd" id="dbpwd" autocomplete="off" lay-verify="required" lay-reqtext="请输入数据库密码" lay-affix="eye" value=""/></div>
                 <div class="layui-form-mid layui-word-aux">请输入连接数据库账号的密码</div>
             </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">强制覆盖表</label>
+                <div class="layui-input-block">
+                    <input type="radio" name="overwrite" value="0" title="覆盖重名表" >
+                    <input type="radio" name="overwrite" value="1" title="清空全部表">
+                    <input type="radio" name="overwrite" value="2" title="检查重名表" checked>
+                </div>
+            </div>
             <h2>管理信息</h2>
             <div class="layui-form-item">
                 <label class="layui-form-label"><font color="red">*</font> 后台的入口</label>
@@ -85,7 +93,7 @@ layui.use(['form', 'layer'],function(){
         if($(this).hasClass('layui-btn-disabled')) return false;
         var d = data.field;
         var loadIndex = layer.msg('系统安装中...', {icon: 16, shade: 0.3, time: 0});
-        var url = '/app/install/index/step4?dbhost='+d.dbhost+'&dbname='+d.dbname+'&dbpre='+d.dbpre+'&dbuser='+d.dbuser+'&dbpwd='+encodeURIComponent(d.dbpwd)+'&dbport='+d.dbport+'&adminmap='+d.adminmap+'&adminuser='+d.adminuser+'&adminpass='+d.adminpass;
+        var url = '/app/install/index/step4?dbhost='+d.dbhost+'&dbname='+d.dbname+'&dbpre='+d.dbpre+'&dbuser='+d.dbuser+'&dbpwd='+encodeURIComponent(d.dbpwd)+'&dbport='+d.dbport+'&overwrite='+d.overwrite+'&adminmap='+d.adminmap+'&adminuser='+d.adminuser+'&adminpass='+d.adminpass;
         $.getJSON(url, function(res) {
             layer.close(loadIndex);
             layer.msg(res.msg, {icon:1, shade:0.3, time:2000},function(){

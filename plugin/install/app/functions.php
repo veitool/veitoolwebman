@@ -1,21 +1,52 @@
 <?php
 
-// 设置是否允许下一步
-function setOk($val)
+/**
+ * 获取pdo连接
+ * @param string $host     数据库地址
+ * @param string $username 数据库账号
+ * @param string $password 数据库密码
+ * @param string $port     数据库端口
+ * @param string $database 数据库名称
+ * @return \PDO
+ */
+function getPDO($host, $username, $password, $port, $database = null)
+{
+    $dsn = "mysql:host={$host};port={$port};".($database ? "dbname={$database}" : "");
+    $params = [
+        \PDO::MYSQL_ATTR_INIT_COMMAND => "set names utf8mb4",
+        \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
+        \PDO::ATTR_EMULATE_PREPARES => false,
+        \PDO::ATTR_TIMEOUT => 5,
+        \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+    ];
+    return new \PDO($dsn, $username, $password, $params);
+}
+
+/**
+ * 设置步骤全局状态 $isOK 的值
+ * @global bool $isOK
+ * @param  bool $val
+ */
+function setOk(bool $val)
 {
     global $isOK;
     $isOK = $val;
 }
 
-// 测试可写性
-function isWrite($path, $i = 0)
+/**
+ * 测试可写性
+ * @param  string $path 路径
+ * @param  int    $p    权限值
+ * @return string
+ */
+function isWrite(string $path, int $p = 0)
 {
     if (!@file_exists(base_path() . $path)) {
         $perms = 0;
     } else {
         $perms = (int)substr(sprintf('%o', @fileperms(base_path() . $path)), -3);
     }
-    if ($perms >= $i) {
+    if ($perms >= $p) {
         echo '<b class="green">符合('.$perms.')</b>';
     } else {
         echo '<span>不符合('.$perms.')</span>';
@@ -23,8 +54,12 @@ function isWrite($path, $i = 0)
     }
 }
 
-// 测试函数是否存在
-function isFunExists($func)
+/**
+ * 测试函数是否存在
+ * @param  string  $func  函数名
+ * @return bool
+ */
+function isFunExists(string $func)
 {
     $state = function_exists($func);
     if($state === false){
@@ -33,8 +68,12 @@ function isFunExists($func)
     return $state;
 }
 
-// 测试函数是否存在
-function isFunExistsTxt($func)
+/**
+ * 测试函数是否存在
+ * @param  string  $func  函数名
+ * @return string
+ */
+function isFunExistsTxt(string $func)
 {
     if(isFunExists($func)){
         echo '<b class="layui-icon green">&#xe697;</b>';

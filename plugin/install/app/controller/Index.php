@@ -81,39 +81,66 @@ class Index extends BaseController
     {
         clearstatcache();
         // 初始化信息
-        $dbhost = $this->request->get('dbhost','');
-        $dbname = $this->request->get('dbname','');
-        $dbpre  = $this->request->get('dbpre','vt_');
-        $dbuser = $this->request->get('dbuser','');
-        $dbpwd  = $this->request->get('dbpwd','');
-        $dbport = $this->request->get('dbport','3306');
-        $adminmap  = $this->request->get('adminmap','admin');
-        $adminuser = $this->request->get('adminuser','admin');
-        $adminpass = $this->request->get('adminpass','123456');
+        $dbhost = $this->request->get('dbhost','','trim');
+        $dbname = $this->request->get('dbname','','trim');
+        $dbpre  = $this->request->get('dbpre','vt_','trim');
+        $dbuser = $this->request->get('dbuser','','trim');
+        $dbpwd  = $this->request->get('dbpwd','','trim');
+        $dbport = $this->request->get('dbport','3306','trim');
+        $overwrite = $this->request->get('overwrite/d',0);
+        //$adminmap  = $this->request->get('adminmap','admin','trim');
+        $adminuser = $this->request->get('adminuser','admin','trim');
+        $adminpass = $this->request->get('adminpass','123456','trim');
         // 连接证数据库
         try{
-            $dsn = "mysql:host={$dbhost};port={$dbport};charset=utf8";
-            $pdo = new \PDO($dsn, $dbuser, $dbpwd);
-            $pdo->query("SET NAMES utf8"); // 设置数据库编码
+            $pdo = getPDO($dbhost, $dbuser, $dbpwd, $dbport);
         }catch(\Exception $e){
             return $this->returnMsg("数据库连接错误，请检查！");
         }
-        // 查询数据库
-        $res = $pdo->query('show Databases');
-        // 遍历所有数据库，存入数组
-        $dbnameArr = [];
-        foreach($res->fetchAll(\PDO::FETCH_ASSOC) as $row){
-            $dbnameArr[] = $row['Database'];
-        }
-        // 检查数据库是否存在，没有则创建数据库
-        if(!in_array(trim($dbname), $dbnameArr)){
+        // 查询数据库是否存在
+        $res = $pdo->query("show databases like '$dbname'");
+        if (empty($res->fetchAll())) {
             if(!$pdo->exec("CREATE DATABASE `$dbname`")){
                 return $this->returnMsg("创建数据库失败，请检查权限或联系管理员！");
             }
         }
-        // 数据库创建完成，开始连接
+        // 指定操作目标库
         $pdo->query("USE `$dbname`");
-
+        // 清空全部表 或 表重名检查
+        if($overwrite){
+            $tables_install = [
+                $dbpre.'system_area',
+                $dbpre.'system_category',
+                $dbpre.'system_dict',
+                $dbpre.'system_dict_group',
+                $dbpre.'system_login_log',
+                $dbpre.'system_manager',
+                $dbpre.'system_manager_log',
+                $dbpre.'system_menus',
+                $dbpre.'system_online',
+                $dbpre.'system_organ',
+                $dbpre.'system_roles',
+                $dbpre.'system_sequence',
+                $dbpre.'system_setting',
+                $dbpre.'system_sms',
+                $dbpre.'system_upload_file',
+                $dbpre.'system_upload_group',
+                $dbpre.'system_web_log',
+            ];
+            $tables_tips = '';
+            $tables = $pdo->query("show tables")->fetchAll();
+            foreach ($tables as $table) {
+                $table = current($table);
+                if ($overwrite == 1) {
+                    $pdo->exec("DROP TABLE `$table`");
+                } elseif ($overwrite == 2 && in_array($table, $tables_install)) {
+                    $tables_tips .= '<p>数据表【'.$table.'】</p>';
+                }
+            }
+            if ($tables_tips) {
+                return $this->returnMsg("<p>数据库【{$dbname}】中以下表已经存在</p>". $tables_tips. "<p>如需覆盖请选择 覆盖重名表 或 清空全部表！</p>");
+            }
+        }
         /*--安装数据解析导入处理--*/
         $sql  = '';
         $flag = $comment = false;
@@ -208,13 +235,12 @@ class Index extends BaseController
      */
     public function check()
     {
-        $dbhost = $this->request->get('dbhost','');
-        $dbport = $this->request->get('dbport','');
-        $dbuser = $this->request->get('dbuser','');
-        $dbpwd  = $this->request->get('dbpwd','');
+        $dbhost = $this->request->get('dbhost','','trim');
+        $dbport = $this->request->get('dbport','','trim');
+        $dbuser = $this->request->get('dbuser','','trim');
+        $dbpwd  = $this->request->get('dbpwd','','trim');
         try{
-            $dsn = "mysql:host={$dbhost};port={$dbport};charset=utf8";
-            new \PDO($dsn, $dbuser, $dbpwd);
+            getPDO($dbhost, $dbuser, $dbpwd, $dbport);
             return 'true';
         }catch(\Exception $e){
             return 'false';
