@@ -205,7 +205,7 @@ if (!function_exists('json')) {
      * @param int $options
      * @return Response
      */
-    function json($data, int $options = JSON_UNESCAPED_UNICODE): Response
+    function json($data, int $options = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR): Response
     {
         return new Response(200, ['Content-Type' => 'application/json'], json_encode($data, $options));
     }
@@ -765,7 +765,7 @@ if (!function_exists('token')) {
 
 if (!function_exists('checkToken')) {
     /**
-     * 检查请求令牌
+     * 检查请求令牌  【新增加的】
      * @access public
      * @param  string $token 令牌名称
      * @param  array  $data  表单数据
@@ -805,7 +805,7 @@ if (!function_exists('checkToken')) {
 
 if (!function_exists('parse_name')) {
     /**
-     * 字符串命名风格转换
+     * 字符串命名风格转换 【新增加的】
      * type 0 将Java风格转换为C的风格 1 将C风格转换为Java的风格
      * @param string $name    字符串
      * @param int    $type    转换类型

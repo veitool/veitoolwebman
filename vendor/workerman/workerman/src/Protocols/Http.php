@@ -20,14 +20,11 @@ use Workerman\Connection\TcpConnection;
 use Workerman\Protocols\Http\Request;
 use Workerman\Protocols\Http\Response;
 use function clearstatcache;
-use function count;
-use function explode;
 use function filesize;
 use function fopen;
 use function fread;
 use function fseek;
 use function ftell;
-use function in_array;
 use function ini_get;
 use function is_array;
 use function is_object;
@@ -35,7 +32,6 @@ use function preg_match;
 use function str_starts_with;
 use function strlen;
 use function strpos;
-use function strstr;
 use function substr;
 use function sys_get_temp_dir;
 
@@ -133,24 +129,8 @@ class Http
      */
     public static function decode(string $buffer, TcpConnection $connection): Request
     {
-        static $requests = [];
-        if (isset($requests[$buffer])) {
-            $request = $requests[$buffer];
-            $request->connection = $connection;
-            $connection->request = $request;
-            $request->destroy();
-            return $request;
-        }
         $request = new static::$requestClass($buffer);
-        if (!isset($buffer[TcpConnection::MAX_CACHE_STRING_LENGTH])) {
-            $requests[$buffer] = $request;
-            if (count($requests) > TcpConnection::MAX_CACHE_SIZE) {
-                unset($requests[key($requests)]);
-            }
-            $request = clone $request;
-        }
         $request->connection = $connection;
-        $connection->request = $request;
         return $request;
     }
 
@@ -163,12 +143,6 @@ class Http
      */
     public static function encode(mixed $response, TcpConnection $connection): string
     {
-        $request = null;
-        if (isset($connection->request)) {
-            $request = $connection->request;
-            $request->connection = $connection->request = null;
-        }
-
         if (!is_object($response)) {
             $extHeader = '';
             $contentType = 'text/html;charset=utf-8';
@@ -197,19 +171,9 @@ class Http
         }
 
         if (isset($response->file)) {
-            $requestRange = [0, 0];
-            if ($value = $request?->header('range')) {
-                if (str_starts_with($value, 'bytes=')) {
-                    $arr = explode('-', substr($value, 6));
-                    if (count($arr) === 2) {
-                        $requestRange = [(int)$arr[0], (int)$arr[1]];
-                    }
-                }
-            }
-
             $file = $response->file['file'];
-            $offset = $response->file['offset'] ?: $requestRange[0];
-            $length = $response->file['length'] ?: $requestRange[1];
+            $offset = $response->file['offset'] ?: 0;
+            $length = $response->file['length'] ?: 0;
             clearstatcache();
             $fileSize = (int)filesize($file);
             $bodyLen = $length > 0 ? $length : $fileSize - $offset;
@@ -259,6 +223,7 @@ class Http
         // Read file content from disk piece by piece and send to client.
         $doWrite = function () use ($connection, $handler, $length, $offsetEnd) {
             // Send buffer not full.
+            /** @phpstan-ignore-next-line */
             while ($connection->context->bufferFull === false) {
                 // Read from disk.
                 $size = 1024 * 1024;

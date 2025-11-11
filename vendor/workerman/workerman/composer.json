@@ -44,9 +44,9 @@
     },
     "require-dev": {
         "pestphp/pest": "2.x-dev",
-        "mockery/mockery": "^1.6",
+        "mockery/mockery": "2.0.x-dev",
         "guzzlehttp/guzzle": "^7.0",
-        "phpstan/phpstan": "1.11.x-dev"
+        "phpstan/phpstan": "2.1.x-dev"
     },
     "config": {
         "allow-plugins": {
@@ -54,7 +54,7 @@
         }
     },
     "scripts": {
-        "analyze": "phpstan",
+        "analyze": "php -d memory_limit=1G vendor/phpstan/phpstan/phpstan.phar",
         "test": "pest --colors=always"
     }
 }

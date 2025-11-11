@@ -19,13 +19,9 @@ use JsonSerializable;
 use RuntimeException;
 use stdClass;
 use Throwable;
-use Workerman\Events\Ev;
-use Workerman\Events\Event;
 use Workerman\Events\EventInterface;
-use Workerman\Events\Select;
 use Workerman\Protocols\Http;
 use Workerman\Protocols\Http\Request;
-use Workerman\Protocols\ProtocolInterface;
 use Workerman\Worker;
 
 use function ceil;
@@ -251,11 +247,6 @@ class TcpConnection extends ConnectionInterface implements JsonSerializable
      * @var array
      */
     public array $headers = [];
-
-    /**
-     * @var ?Request
-     */
-    public ?Request $request = null;
 
     /**
      * Is safe.
@@ -671,15 +662,16 @@ class TcpConnection extends ConnectionInterface implements JsonSerializable
                 if (!isset($buffer[static::MAX_CACHE_STRING_LENGTH]) && isset($requests[$buffer])) {
                     ++self::$statistics['total_request'];
                     if ($this->protocol === Http::class) {
-                        $request = clone $requests[$buffer];
-                        $request->destroy();
+                        $request = $requests[$buffer];
                         $request->connection = $this;
-                        $this->request = $request;
                         try {
                             ($this->onMessage)($this, $request);
                         } catch (Throwable $e) {
                             $this->error($e);
                         }
+                        $request = clone $request;
+                        $request->destroy();
+                        $requests[$buffer] = $request;
                         return;
                     }
                     $request = $requests[$buffer];
@@ -749,11 +741,10 @@ class TcpConnection extends ConnectionInterface implements JsonSerializable
                     if ((!is_object($request) || $request instanceof Request) && $one && !isset($oneRequestBuffer[static::MAX_CACHE_STRING_LENGTH])) {
                         ($this->onMessage)($this, $request);
                         if ($request instanceof Request) {
-                            $requests[$oneRequestBuffer] = clone $request;
-                            $requests[$oneRequestBuffer]->destroy();
-                        } else {
-                            $requests[$oneRequestBuffer] = $request;
+                            $request = clone $request;
+                            $request->destroy();
                         }
+                        $requests[$oneRequestBuffer] = $request;
                         if (count($requests) > static::MAX_CACHE_SIZE) {
                             unset($requests[key($requests)]);
                         }
@@ -771,7 +762,7 @@ class TcpConnection extends ConnectionInterface implements JsonSerializable
             return;
         }
 
-        // Applications protocol is not set.
+        // Application protocol is not set.
         ++self::$statistics['total_request'];
         try {
             ($this->onMessage)($this, $this->recvBuffer);
