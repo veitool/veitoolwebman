@@ -4572,24 +4572,24 @@
         },
         {
             "name": "webman/rate-limiter",
-            "version": "v1.1.3",
-            "version_normalized": "1.1.3.0",
+            "version": "v1.1.4",
+            "version_normalized": "1.1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webman-php/rate-limiter.git",
-                "reference": "f6ff79366ab56ac66bc507515d747cdef752db2d"
+                "reference": "30e9f3a495c11f68d34ac64c6a4555ad85c08423"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webman-php/rate-limiter/zipball/f6ff79366ab56ac66bc507515d747cdef752db2d",
-                "reference": "f6ff79366ab56ac66bc507515d747cdef752db2d",
+                "url": "https://api.github.com/repos/webman-php/rate-limiter/zipball/30e9f3a495c11f68d34ac64c6a4555ad85c08423",
+                "reference": "30e9f3a495c11f68d34ac64c6a4555ad85c08423",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.0",
                 "workerman/webman-framework": ">=1.5.15"
             },
-            "time": "2024-12-27T10:02:44+00:00",
+            "time": "2025-11-11T07:19:18+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -4604,7 +4604,7 @@
             "description": "Webman plugin webman/rate-limiter",
             "support": {
                 "issues": "https://github.com/webman-php/rate-limiter/issues",
-                "source": "https://github.com/webman-php/rate-limiter/tree/v1.1.3"
+                "source": "https://github.com/webman-php/rate-limiter/tree/v1.1.4"
             },
             "install-path": "../webman/rate-limiter"
         },
@@ -5025,17 +5025,17 @@
         },
         {
             "name": "workerman/workerman",
-            "version": "v5.1.5",
-            "version_normalized": "5.1.5.0",
+            "version": "v5.1.6",
+            "version_normalized": "5.1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/walkor/workerman.git",
-                "reference": "a8d944c03225ee93ca9d29282d9fe8c798d3efc9"
+                "reference": "9b83bdf9fd0eaff9419a240b47da870447583112"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/walkor/workerman/zipball/a8d944c03225ee93ca9d29282d9fe8c798d3efc9",
-                "reference": "a8d944c03225ee93ca9d29282d9fe8c798d3efc9",
+                "url": "https://api.github.com/repos/walkor/workerman/zipball/9b83bdf9fd0eaff9419a240b47da870447583112",
+                "reference": "9b83bdf9fd0eaff9419a240b47da870447583112",
                 "shasum": ""
             },
             "require": {
@@ -5055,7 +5055,7 @@
             "suggest": {
                 "ext-event": "For better performance. "
             },
-            "time": "2025-11-08T14:14:36+00:00",
+            "time": "2025-11-12T01:36:20+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
