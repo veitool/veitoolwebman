@@ -88,8 +88,10 @@ class Limiter implements MiddlewareInterface
                     break;
                 case RateLimiterAnnotation::IP:
                     $ip = $request->getRealIp();
-                    if (in_array($ip, static::$ipWhiteList)) {
-                        continue 2;
+                    foreach (static::$ipWhiteList as $allowIp) {
+                        if ($this->ipInRange($ip, $allowIp)) {
+                            continue 3;
+                        }
                     }
                     $key = "$prefix-$request->controller-$request->action-$annotation->key-$ip";
                     break;
@@ -107,6 +109,32 @@ class Limiter implements MiddlewareInterface
         }
 
         return $handler($request);
+    }
+
+    /**
+     * 检查IP是否在指定范围内
+     * 
+     * @param string $ip
+     * @param string $range
+     * @return bool
+     */
+    public function ipInRange(string $ip, string $range): bool
+    {
+        if (strpos($range, '/') !== false) {
+            // CIDR表示法, 例如: 192.168.0.0/16
+            [$subnet, $bits] = explode('/', $range);
+            $ipLong = ip2long($ip);
+            $subnetLong = ip2long($subnet);
+            $mask = -1 << (32 - $bits);
+
+            return ($ipLong & $mask) == ($subnetLong & $mask);
+        } else {
+            // 通配符表示法, 例如: 192.168.*.*
+            $rangeRegex = str_replace('.', '\.', $range);
+            $rangeRegex = str_replace('*', '[0-9]+', $rangeRegex);
+
+            return preg_match('/^'.$rangeRegex.'$/', $ip) === 1;
+        }
     }
 
     /**
