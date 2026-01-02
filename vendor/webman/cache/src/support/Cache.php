@@ -3,8 +3,8 @@
 namespace support;
 
 use RedisException;
-use ReflectionClass;
 use ReflectionException;
+use ReflectionProperty;
 use Symfony\Component\Cache\Adapter\ApcuAdapter;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
@@ -79,9 +79,7 @@ class Cache
                         // When the redis instance is destroyed by the connection pool,
                         // the corresponding cache instance needs to be destroyed as well.
                         DestructionWatcher::watch($redis, function() use ($cache) {
-                            $reflection = new ReflectionClass(Psr16Cache::class);
-                            $property = $reflection->getProperty('createCacheItem');
-                            $property->setAccessible(true);
+                            $property = new ReflectionProperty(Psr16Cache::class, 'createCacheItem');
                             $property->setValue($cache, null);
                         });
                     }

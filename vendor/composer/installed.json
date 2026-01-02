@@ -1654,17 +1654,17 @@
         },
         {
             "name": "monolog/monolog",
-            "version": "2.10.0",
-            "version_normalized": "2.10.0.0",
+            "version": "2.11.0",
+            "version_normalized": "2.11.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "5cf826f2991858b54d5c3809bee745560a1042a7"
+                "reference": "37308608e599f34a1a4845b16440047ec98a172a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/5cf826f2991858b54d5c3809bee745560a1042a7",
-                "reference": "5cf826f2991858b54d5c3809bee745560a1042a7",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/37308608e599f34a1a4845b16440047ec98a172a",
+                "reference": "37308608e599f34a1a4845b16440047ec98a172a",
                 "shasum": ""
             },
             "require": {
@@ -1682,7 +1682,7 @@
                 "graylog2/gelf-php": "^1.4.2 || ^2@dev",
                 "guzzlehttp/guzzle": "^7.4",
                 "guzzlehttp/psr7": "^2.2",
-                "mongodb/mongodb": "^1.8",
+                "mongodb/mongodb": "^1.8 || ^2.0",
                 "php-amqplib/php-amqplib": "~2.4 || ^3",
                 "phpspec/prophecy": "^1.15",
                 "phpstan/phpstan": "^1.10",
@@ -1710,7 +1710,7 @@
                 "rollbar/rollbar": "Allow sending log messages to Rollbar",
                 "ruflin/elastica": "Allow sending log messages to an Elastic Search server"
             },
-            "time": "2024-11-12T12:43:37+00:00",
+            "time": "2026-01-01T13:05:00+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1743,7 +1743,7 @@
             ],
             "support": {
                 "issues": "https://github.com/Seldaek/monolog/issues",
-                "source": "https://github.com/Seldaek/monolog/tree/2.10.0"
+                "source": "https://github.com/Seldaek/monolog/tree/2.11.0"
             },
             "funding": [
                 {
@@ -2954,17 +2954,17 @@
         },
         {
             "name": "symfony/cache",
-            "version": "v7.3.6",
-            "version_normalized": "7.3.6.0",
+            "version": "v7.3.9",
+            "version_normalized": "7.3.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/cache.git",
-                "reference": "1277a1ec61c8d93ea61b2a59738f1deb9bfb6701"
+                "reference": "fae016390a2e6b451abc0f4805cbfe0bf70f437f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/cache/zipball/1277a1ec61c8d93ea61b2a59738f1deb9bfb6701",
-                "reference": "1277a1ec61c8d93ea61b2a59738f1deb9bfb6701",
+                "url": "https://api.github.com/repos/symfony/cache/zipball/fae016390a2e6b451abc0f4805cbfe0bf70f437f",
+                "reference": "fae016390a2e6b451abc0f4805cbfe0bf70f437f",
                 "shasum": ""
             },
             "require": {
@@ -3000,7 +3000,7 @@
                 "symfony/messenger": "^6.4|^7.0",
                 "symfony/var-dumper": "^6.4|^7.0"
             },
-            "time": "2025-10-30T13:22:58+00:00",
+            "time": "2025-12-28T10:45:15+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -3035,7 +3035,7 @@
                 "psr6"
             ],
             "support": {
-                "source": "https://github.com/symfony/cache/tree/v7.3.6"
+                "source": "https://github.com/symfony/cache/tree/v7.3.9"
             },
             "funding": [
                 {
@@ -3289,17 +3289,17 @@
         },
         {
             "name": "symfony/finder",
-            "version": "v7.4.0",
-            "version_normalized": "7.4.0.0",
+            "version": "v7.4.3",
+            "version_normalized": "7.4.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
-                "reference": "340b9ed7320570f319028a2cbec46d40535e94bd"
+                "reference": "fffe05569336549b20a1be64250b40516d6e8d06"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/340b9ed7320570f319028a2cbec46d40535e94bd",
-                "reference": "340b9ed7320570f319028a2cbec46d40535e94bd",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/fffe05569336549b20a1be64250b40516d6e8d06",
+                "reference": "fffe05569336549b20a1be64250b40516d6e8d06",
                 "shasum": ""
             },
             "require": {
@@ -3308,7 +3308,7 @@
             "require-dev": {
                 "symfony/filesystem": "^6.4|^7.0|^8.0"
             },
-            "time": "2025-11-05T05:42:40+00:00",
+            "time": "2025-12-23T14:50:43+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -3336,7 +3336,7 @@
             "description": "Finds files and directories via an intuitive fluent interface",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/finder/tree/v7.4.0"
+                "source": "https://github.com/symfony/finder/tree/v7.4.3"
             },
             "funding": [
                 {
@@ -3708,17 +3708,17 @@
         },
         {
             "name": "symfony/translation",
-            "version": "v7.4.0",
-            "version_normalized": "7.4.0.0",
+            "version": "v7.4.3",
+            "version_normalized": "7.4.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/translation.git",
-                "reference": "2d01ca0da3f092f91eeedb46f24aa30d2fca8f68"
+                "reference": "7ef27c65d78886f7599fdd5c93d12c9243ecf44d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/translation/zipball/2d01ca0da3f092f91eeedb46f24aa30d2fca8f68",
-                "reference": "2d01ca0da3f092f91eeedb46f24aa30d2fca8f68",
+                "url": "https://api.github.com/repos/symfony/translation/zipball/7ef27c65d78886f7599fdd5c93d12c9243ecf44d",
+                "reference": "7ef27c65d78886f7599fdd5c93d12c9243ecf44d",
                 "shasum": ""
             },
             "require": {
@@ -3756,7 +3756,7 @@
                 "symfony/service-contracts": "^2.5|^3",
                 "symfony/yaml": "^6.4|^7.0|^8.0"
             },
-            "time": "2025-11-27T13:27:24+00:00",
+            "time": "2025-12-29T09:31:36+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -3787,7 +3787,7 @@
             "description": "Provides tools to internationalize your application",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/translation/tree/v7.4.0"
+                "source": "https://github.com/symfony/translation/tree/v7.4.3"
             },
             "funding": [
                 {
@@ -4029,17 +4029,17 @@
         },
         {
             "name": "topthink/think-helper",
-            "version": "v3.1.11",
-            "version_normalized": "3.1.11.0",
+            "version": "v3.1.12",
+            "version_normalized": "3.1.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/top-think/think-helper.git",
-                "reference": "1d6ada9b9f3130046bf6922fe1bd159c8d88a33c"
+                "reference": "fe277121112a8f1c872e169a733ca80bb11c4acb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/top-think/think-helper/zipball/1d6ada9b9f3130046bf6922fe1bd159c8d88a33c",
-                "reference": "1d6ada9b9f3130046bf6922fe1bd159c8d88a33c",
+                "url": "https://api.github.com/repos/top-think/think-helper/zipball/fe277121112a8f1c872e169a733ca80bb11c4acb",
+                "reference": "fe277121112a8f1c872e169a733ca80bb11c4acb",
                 "shasum": ""
             },
             "require": {
@@ -4048,7 +4048,7 @@
             "require-dev": {
                 "phpunit/phpunit": "^9.5"
             },
-            "time": "2025-04-07T06:55:59+00:00",
+            "time": "2025-12-26T09:58:29+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -4072,7 +4072,7 @@
             "description": "The ThinkPHP6 Helper Package",
             "support": {
                 "issues": "https://github.com/top-think/think-helper/issues",
-                "source": "https://github.com/top-think/think-helper/tree/v3.1.11"
+                "source": "https://github.com/top-think/think-helper/tree/v3.1.12"
             },
             "install-path": "../topthink/think-helper"
         },
@@ -4125,17 +4125,17 @@
         },
         {
             "name": "topthink/think-orm",
-            "version": "v4.0.50",
-            "version_normalized": "4.0.50.0",
+            "version": "v4.0.51",
+            "version_normalized": "4.0.51.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/top-think/think-orm.git",
-                "reference": "ddae72d5ff4d953d3d8cc526fd9c50e8862ce2cc"
+                "reference": "46abe2f824eb3bcb117d4c0ce93b203b592b79f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/top-think/think-orm/zipball/ddae72d5ff4d953d3d8cc526fd9c50e8862ce2cc",
-                "reference": "ddae72d5ff4d953d3d8cc526fd9c50e8862ce2cc",
+                "url": "https://api.github.com/repos/top-think/think-orm/zipball/46abe2f824eb3bcb117d4c0ce93b203b592b79f7",
+                "reference": "46abe2f824eb3bcb117d4c0ce93b203b592b79f7",
                 "shasum": ""
             },
             "require": {
@@ -4153,7 +4153,7 @@
             "suggest": {
                 "ext-mongodb": "provide mongodb support"
             },
-            "time": "2025-08-26T05:32:22+00:00",
+            "time": "2025-12-18T13:11:52+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -4182,7 +4182,7 @@
             ],
             "support": {
                 "issues": "https://github.com/top-think/think-orm/issues",
-                "source": "https://github.com/top-think/think-orm/tree/v4.0.50"
+                "source": "https://github.com/top-think/think-orm/tree/v4.0.51"
             },
             "install-path": "../topthink/think-orm"
         },
@@ -4405,17 +4405,17 @@
         },
         {
             "name": "webman/cache",
-            "version": "v2.1.2",
-            "version_normalized": "2.1.2.0",
+            "version": "v2.1.3",
+            "version_normalized": "2.1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webman-php/cache.git",
-                "reference": "66a5461ea51d23364403b54ee218b736d26bb03f"
+                "reference": "8600b7a5172e3848f3f0d707a36d37ee9b8328d8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webman-php/cache/zipball/66a5461ea51d23364403b54ee218b736d26bb03f",
-                "reference": "66a5461ea51d23364403b54ee218b736d26bb03f",
+                "url": "https://api.github.com/repos/webman-php/cache/zipball/8600b7a5172e3848f3f0d707a36d37ee9b8328d8",
+                "reference": "8600b7a5172e3848f3f0d707a36d37ee9b8328d8",
                 "shasum": ""
             },
             "require": {
@@ -4424,7 +4424,7 @@
                 "symfony/cache": "^6.0 || ^7.0",
                 "workerman/webman-framework": "^2.1 || dev-master"
             },
-            "time": "2025-04-11T01:23:50+00:00",
+            "time": "2025-11-25T12:35:45+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -4439,7 +4439,7 @@
             ],
             "support": {
                 "issues": "https://github.com/webman-php/cache/issues",
-                "source": "https://github.com/webman-php/cache/tree/v2.1.2"
+                "source": "https://github.com/webman-php/cache/tree/v2.1.3"
             },
             "install-path": "../webman/cache"
         },
@@ -5029,17 +5029,17 @@
         },
         {
             "name": "workerman/workerman",
-            "version": "v5.1.6",
-            "version_normalized": "5.1.6.0",
+            "version": "v5.1.7",
+            "version_normalized": "5.1.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/walkor/workerman.git",
-                "reference": "9b83bdf9fd0eaff9419a240b47da870447583112"
+                "reference": "510eb286cf5254c626b08f94dc28adc6340d09b3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/walkor/workerman/zipball/9b83bdf9fd0eaff9419a240b47da870447583112",
-                "reference": "9b83bdf9fd0eaff9419a240b47da870447583112",
+                "url": "https://api.github.com/repos/walkor/workerman/zipball/510eb286cf5254c626b08f94dc28adc6340d09b3",
+                "reference": "510eb286cf5254c626b08f94dc28adc6340d09b3",
                 "shasum": ""
             },
             "require": {
@@ -5052,14 +5052,14 @@
             },
             "require-dev": {
                 "guzzlehttp/guzzle": "^7.0",
-                "mockery/mockery": "2.0.x-dev",
-                "pestphp/pest": "2.x-dev",
+                "mockery/mockery": "^1.6",
+                "pestphp/pest": "^2.36 || ^3 || ^4",
                 "phpstan/phpstan": "2.1.x-dev"
             },
             "suggest": {
                 "ext-event": "For better performance. "
             },
-            "time": "2025-11-12T01:36:20+00:00",
+            "time": "2025-12-29T03:44:19+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {

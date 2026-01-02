@@ -244,6 +244,10 @@ class TcpConnection extends ConnectionInterface implements JsonSerializable
     public ?stdClass $context = null;
 
     /**
+     * Internal use only. Do not access or modify from application code.
+     *
+     * @internal Framework internal API
+     * @deprecated Do not set this property, use $response->header() or $response->widthHeaders() instead
      * @var array
      */
     public array $headers = [];
@@ -1089,11 +1093,12 @@ class TcpConnection extends ConnectionInterface implements JsonSerializable
     }
 
     /**
-     * __wakeup.
+     * __unserialize.
      *
+     * @param array $data
      * @return void
      */
-    public function __wakeup()
+    public function __unserialize(array $data): void
     {
         $this->isSafe = false;
     }
