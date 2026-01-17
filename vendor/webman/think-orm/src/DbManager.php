@@ -20,6 +20,19 @@ use think\db\Query;
  */
 class DbManager extends \think\DbManager
 {
+    /**
+     * Default heartbeat SQL (most SQL databases).
+     *
+     * @var string
+     */
+    private const HEARTBEAT_SQL_DEFAULT = 'SELECT 1 AS ping';
+
+    /**
+     * Oracle heartbeat SQL.
+     *
+     * @var string
+     */
+    private const HEARTBEAT_SQL_ORACLE = 'SELECT 1 AS ping FROM DUAL';
 
     /**
      * @var Pool[]
@@ -29,7 +42,7 @@ class DbManager extends \think\DbManager
     /**
      * Get instance of connection.
      *
-     * @param string|null $name
+     * @param array|string|null $name
      * @param bool $force
      * @return ConnectionInterface
      * @throws Throwable
@@ -52,12 +65,7 @@ class DbManager extends \think\DbManager
                     $this->closeConnection($connection);
                 });
                 $pool->setHeartbeatChecker(function ($connection) {
-                    if ($connection->getConfig('type') === 'mongo') {
-                        $command = new Command(['ping' => 1]);
-                        $connection->command($command);
-                        return;
-                    }
-                    $connection->query('select 1');
+                    $this->heartbeat($connection);
                 });
                 static::$pools[$name] = $pool;
             }
@@ -78,12 +86,49 @@ class DbManager extends \think\DbManager
     }
 
     /**
+     * Heartbeat checker for pooled connections.
+     *
+     * @param mixed $connection
+     * @return void
+     */
+    private function heartbeat(mixed $connection): void
+    {
+        $type = strtolower((string) $connection->getConfig('type'));
+
+        if ($type === 'mongo') {
+            $command = new Command(['ping' => 1]);
+            $connection->command($command);
+            return;
+        }
+
+        $connection->query($this->getHeartbeatSql($type));
+    }
+
+    /**
+     * Get heartbeat SQL.
+     *
+     * @param string $type
+     * @return string
+     */
+    private function getHeartbeatSql(string $type): string
+    {
+        $type = strtolower($type);
+
+        return match ($type) {
+            'oracle',
+            'oci',
+            'oci8' => self::HEARTBEAT_SQL_ORACLE,
+            default => self::HEARTBEAT_SQL_DEFAULT,
+        };
+    }
+
+    /**
      * Close connection.
      *
      * @param ConnectionInterface $connection
      * @return void
      */
-    protected function closeConnection(ConnectionInterface $connection)
+    protected function closeConnection(ConnectionInterface $connection): void
     {
         $connection->close();
         $clearProperties = function () {
