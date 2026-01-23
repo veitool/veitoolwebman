@@ -200,6 +200,16 @@ class Index extends BaseController
         $adminpass = set_password($adminpass,$passsalt);
         $pdo->exec("UPDATE {$dbpre}system_manager SET `username` ='{$adminuser}',`password`='{$adminpass}',`passsalt`='{$passsalt}' WHERE userid = 1");
 
+        // 更新veitool配置
+        $keys = getRSAKey();
+        $keys['access_secret_key']  = md5(uniqid());
+        $keys['refresh_secret_key'] = md5(uniqid());
+        $keys['domain'] = request()->host();
+        $veitool_str = getVeitool($keys);
+        $fp = fopen(base_path() . '/config/veitool.php', 'w');
+        fwrite($fp, $veitool_str);
+        fclose($fp);
+
         // 获取.env模板内容
         $env_str = getEnvs();
         $env_str = str_replace('~db_host~', $dbhost, $env_str);

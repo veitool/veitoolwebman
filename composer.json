@@ -45,7 +45,8 @@
     "topthink/think-image": "^1.0",
     "webman/cache": "^2.1",
     "webman/redis": "^2.1",
-    "illuminate/events": "^11.42"
+    "illuminate/events": "^11.42",
+    "firebase/php-jwt": "^7.0"
   },
   "suggest": {
     "ext-event": "For better performance. "

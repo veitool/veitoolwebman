@@ -296,6 +296,72 @@
             "install-path": "../doctrine/inflector"
         },
         {
+            "name": "firebase/php-jwt",
+            "version": "v7.0.2",
+            "version_normalized": "7.0.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/firebase/php-jwt.git",
+                "reference": "5645b43af647b6947daac1d0f659dd1fbe8d3b65"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/5645b43af647b6947daac1d0f659dd1fbe8d3b65",
+                "reference": "5645b43af647b6947daac1d0f659dd1fbe8d3b65",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "guzzlehttp/guzzle": "^7.4",
+                "phpspec/prophecy-phpunit": "^2.0",
+                "phpunit/phpunit": "^9.5",
+                "psr/cache": "^2.0||^3.0",
+                "psr/http-client": "^1.0",
+                "psr/http-factory": "^1.0"
+            },
+            "suggest": {
+                "ext-sodium": "Support EdDSA (Ed25519) signatures",
+                "paragonie/sodium_compat": "Support EdDSA (Ed25519) signatures when libsodium is not present"
+            },
+            "time": "2025-12-16T22:17:28+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Firebase\\JWT\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Neuman Vong",
+                    "email": "neuman+pear@twilio.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Anant Narayanan",
+                    "email": "anant@php.net",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should conform to the current spec.",
+            "homepage": "https://github.com/firebase/php-jwt",
+            "keywords": [
+                "jwt",
+                "php"
+            ],
+            "support": {
+                "issues": "https://github.com/firebase/php-jwt/issues",
+                "source": "https://github.com/firebase/php-jwt/tree/v7.0.2"
+            },
+            "install-path": "../firebase/php-jwt"
+        },
+        {
             "name": "guzzlehttp/command",
             "version": "1.3.2",
             "version_normalized": "1.3.2.0",
@@ -4690,17 +4756,17 @@
         },
         {
             "name": "webman/think-orm",
-            "version": "v2.1.8",
-            "version_normalized": "2.1.8.0",
+            "version": "v2.1.9",
+            "version_normalized": "2.1.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webman-php/think-orm.git",
-                "reference": "7650102429b133c1299135cac563c0834e2652aa"
+                "reference": "b1cf2756f8f5f8b2f9fc7edbfedf9012e00cccf3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webman-php/think-orm/zipball/7650102429b133c1299135cac563c0834e2652aa",
-                "reference": "7650102429b133c1299135cac563c0834e2652aa",
+                "url": "https://api.github.com/repos/webman-php/think-orm/zipball/b1cf2756f8f5f8b2f9fc7edbfedf9012e00cccf3",
+                "reference": "b1cf2756f8f5f8b2f9fc7edbfedf9012e00cccf3",
                 "shasum": ""
             },
             "require": {
@@ -4709,7 +4775,7 @@
                 "topthink/think-orm": "^2.0.53 || ^3.0.0 || ^4.0.30 || dev-master",
                 "workerman/webman-framework": "^2.1 || dev-master"
             },
-            "time": "2025-09-02T01:32:49+00:00",
+            "time": "2026-01-06T14:28:53+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -4724,7 +4790,7 @@
             ],
             "support": {
                 "issues": "https://github.com/webman-php/think-orm/issues",
-                "source": "https://github.com/webman-php/think-orm/tree/v2.1.8"
+                "source": "https://github.com/webman-php/think-orm/tree/v2.1.9"
             },
             "install-path": "../webman/think-orm"
         },
@@ -5029,17 +5095,17 @@
         },
         {
             "name": "workerman/workerman",
-            "version": "v5.1.7",
-            "version_normalized": "5.1.7.0",
+            "version": "v5.1.8",
+            "version_normalized": "5.1.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/walkor/workerman.git",
-                "reference": "510eb286cf5254c626b08f94dc28adc6340d09b3"
+                "reference": "a314755259375fbeb6051e27171fcdb46e7ba2ca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/walkor/workerman/zipball/510eb286cf5254c626b08f94dc28adc6340d09b3",
-                "reference": "510eb286cf5254c626b08f94dc28adc6340d09b3",
+                "url": "https://api.github.com/repos/walkor/workerman/zipball/a314755259375fbeb6051e27171fcdb46e7ba2ca",
+                "reference": "a314755259375fbeb6051e27171fcdb46e7ba2ca",
                 "shasum": ""
             },
             "require": {
@@ -5059,7 +5125,7 @@
             "suggest": {
                 "ext-event": "For better performance. "
             },
-            "time": "2025-12-29T03:44:19+00:00",
+            "time": "2026-01-05T08:36:38+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {

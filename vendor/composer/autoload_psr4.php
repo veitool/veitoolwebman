@@ -8,8 +8,8 @@ $baseDir = dirname($vendorDir);
 return array(
     'voku\\' => array($vendorDir . '/voku/portable-ascii/src/voku'),
     'veitool\\' => array($vendorDir . '/veitool/admin/src/veitool'),
-    'think\\' => array($vendorDir . '/topthink/think-container/src', $vendorDir . '/topthink/think-image/src', $vendorDir . '/topthink/think-template/src', $vendorDir . '/topthink/think-validate/src', $vendorDir . '/topthink/think-orm/src', $vendorDir . '/topthink/think-helper/src'),
-    'support\\' => array($vendorDir . '/webman/redis/src/support', $vendorDir . '/webman/think-orm/src/support', $vendorDir . '/workerman/webman-framework/src/support', $vendorDir . '/webman/cache/src/support'),
+    'think\\' => array($vendorDir . '/topthink/think-container/src', $vendorDir . '/topthink/think-helper/src', $vendorDir . '/topthink/think-image/src', $vendorDir . '/topthink/think-orm/src', $vendorDir . '/topthink/think-template/src', $vendorDir . '/topthink/think-validate/src'),
+    'support\\' => array($vendorDir . '/webman/cache/src/support', $vendorDir . '/webman/redis/src/support', $vendorDir . '/webman/think-orm/src/support', $vendorDir . '/workerman/webman-framework/src/support'),
     'app\\View\\Components\\' => array($baseDir . '/app/view/components'),
     'app\\' => array($baseDir . '/app'),
     'ZipStream\\' => array($vendorDir . '/maennchen/zipstream-php/src'),
@@ -73,6 +73,7 @@ return array(
     'GuzzleHttp\\Command\\' => array($vendorDir . '/guzzlehttp/command/src'),
     'GuzzleHttp\\' => array($vendorDir . '/guzzlehttp/guzzle/src'),
     'GatewayWorker\\' => array($vendorDir . '/workerman/gateway-worker/src'),
+    'Firebase\\JWT\\' => array($vendorDir . '/firebase/php-jwt/src'),
     'FastRoute\\' => array($vendorDir . '/nikic/fast-route/src'),
     'Doctrine\\Inflector\\' => array($vendorDir . '/doctrine/inflector/src'),
     'Composer\\Pcre\\' => array($vendorDir . '/composer/pcre/src'),

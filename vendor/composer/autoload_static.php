@@ -140,6 +140,7 @@ class ComposerStaticInit691f538563ac6695008ddc51b7722c80
         ),
         'F' => 
         array (
+            'Firebase\\JWT\\' => 13,
             'FastRoute\\' => 10,
         ),
         'D' => 
@@ -171,18 +172,18 @@ class ComposerStaticInit691f538563ac6695008ddc51b7722c80
         'think\\' => 
         array (
             0 => __DIR__ . '/..' . '/topthink/think-container/src',
-            1 => __DIR__ . '/..' . '/topthink/think-image/src',
-            2 => __DIR__ . '/..' . '/topthink/think-template/src',
-            3 => __DIR__ . '/..' . '/topthink/think-validate/src',
-            4 => __DIR__ . '/..' . '/topthink/think-orm/src',
-            5 => __DIR__ . '/..' . '/topthink/think-helper/src',
+            1 => __DIR__ . '/..' . '/topthink/think-helper/src',
+            2 => __DIR__ . '/..' . '/topthink/think-image/src',
+            3 => __DIR__ . '/..' . '/topthink/think-orm/src',
+            4 => __DIR__ . '/..' . '/topthink/think-template/src',
+            5 => __DIR__ . '/..' . '/topthink/think-validate/src',
         ),
         'support\\' => 
         array (
-            0 => __DIR__ . '/..' . '/webman/redis/src/support',
-            1 => __DIR__ . '/..' . '/webman/think-orm/src/support',
-            2 => __DIR__ . '/..' . '/workerman/webman-framework/src/support',
-            3 => __DIR__ . '/..' . '/webman/cache/src/support',
+            0 => __DIR__ . '/..' . '/webman/cache/src/support',
+            1 => __DIR__ . '/..' . '/webman/redis/src/support',
+            2 => __DIR__ . '/..' . '/webman/think-orm/src/support',
+            3 => __DIR__ . '/..' . '/workerman/webman-framework/src/support',
         ),
         'app\\View\\Components\\' => 
         array (
@@ -440,6 +441,10 @@ class ComposerStaticInit691f538563ac6695008ddc51b7722c80
         'GatewayWorker\\' => 
         array (
             0 => __DIR__ . '/..' . '/workerman/gateway-worker/src',
+        ),
+        'Firebase\\JWT\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
         ),
         'FastRoute\\' => 
         array (
