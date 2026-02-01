@@ -63,6 +63,11 @@ class Client
     protected $_logger = null;
 
     /**
+     * @var int|null
+     */
+    protected $_retryTimerId = null;
+
+    /**
      * consume failure callback
      * @var callable
      */
@@ -188,11 +193,10 @@ class Client
      */
     protected function tryToPullDelayQueue()
     {
-        static $retry_timer = 0;
-        if ($retry_timer) {
+        if ($this->_retryTimerId) {
             return;
         }
-        $retry_timer = Timer::add(1, function () {
+        $this->_retryTimerId = Timer::add(1, function () {
             $now = time();
             $options = ['LIMIT', 0, 128];
             $this->_redisSend->zrevrangebyscore($this->_options['prefix'] . static::QUEUE_DELAYED, $now, '-inf', $options, function ($items) {
