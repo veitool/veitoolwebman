@@ -9,7 +9,7 @@ return array(
     'voku\\' => array($vendorDir . '/voku/portable-ascii/src/voku'),
     'veitool\\' => array($vendorDir . '/veitool/admin/src/veitool'),
     'think\\' => array($vendorDir . '/topthink/think-container/src', $vendorDir . '/topthink/think-helper/src', $vendorDir . '/topthink/think-image/src', $vendorDir . '/topthink/think-orm/src', $vendorDir . '/topthink/think-template/src', $vendorDir . '/topthink/think-validate/src'),
-    'support\\' => array($vendorDir . '/webman/cache/src/support', $vendorDir . '/webman/redis/src/support', $vendorDir . '/webman/think-orm/src/support', $vendorDir . '/workerman/webman-framework/src/support'),
+    'support\\' => array($vendorDir . '/webman/cache/src/support', $vendorDir . '/webman/redis/src/support', $vendorDir . '/workerman/webman-framework/src/support', $vendorDir . '/webman/think-orm/src/support'),
     'app\\View\\Components\\' => array($baseDir . '/app/view/components'),
     'app\\' => array($baseDir . '/app'),
     'ZipStream\\' => array($vendorDir . '/maennchen/zipstream-php/src'),

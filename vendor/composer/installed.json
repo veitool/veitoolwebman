@@ -4756,17 +4756,17 @@
         },
         {
             "name": "webman/think-orm",
-            "version": "v2.1.9",
-            "version_normalized": "2.1.9.0",
+            "version": "v2.1.10",
+            "version_normalized": "2.1.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webman-php/think-orm.git",
-                "reference": "b1cf2756f8f5f8b2f9fc7edbfedf9012e00cccf3"
+                "reference": "b779fce0de4d66e08eb8925eb5841107d1ca9ec4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webman-php/think-orm/zipball/b1cf2756f8f5f8b2f9fc7edbfedf9012e00cccf3",
-                "reference": "b1cf2756f8f5f8b2f9fc7edbfedf9012e00cccf3",
+                "url": "https://api.github.com/repos/webman-php/think-orm/zipball/b779fce0de4d66e08eb8925eb5841107d1ca9ec4",
+                "reference": "b779fce0de4d66e08eb8925eb5841107d1ca9ec4",
                 "shasum": ""
             },
             "require": {
@@ -4775,7 +4775,7 @@
                 "topthink/think-orm": "^2.0.53 || ^3.0.0 || ^4.0.30 || dev-master",
                 "workerman/webman-framework": "^2.1 || dev-master"
             },
-            "time": "2026-01-06T14:28:53+00:00",
+            "time": "2026-02-04T09:07:18+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -4790,7 +4790,7 @@
             ],
             "support": {
                 "issues": "https://github.com/webman-php/think-orm/issues",
-                "source": "https://github.com/webman-php/think-orm/tree/v2.1.9"
+                "source": "https://github.com/webman-php/think-orm/tree/v2.1.10"
             },
             "install-path": "../webman/think-orm"
         },

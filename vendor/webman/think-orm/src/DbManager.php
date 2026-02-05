@@ -61,8 +61,8 @@ class DbManager extends \think\DbManager
                 $pool->setConnectionCreator(function () use ($name) {
                     return $this->createConnection($name);
                 });
-                $pool->setConnectionCloser(function ($connection) {
-                    $this->closeConnection($connection);
+                $pool->setConnectionCloser(function ($connection) use ($name) {
+                    $this->closeConnection($connection, $name);
                 });
                 $pool->setHeartbeatChecker(function ($connection) {
                     $this->heartbeat($connection);
@@ -126,9 +126,10 @@ class DbManager extends \think\DbManager
      * Close connection.
      *
      * @param ConnectionInterface $connection
+     * @param string|null $name Connection config name used for Context cache key.
      * @return void
      */
-    protected function closeConnection(ConnectionInterface $connection): void
+    protected function closeConnection(ConnectionInterface $connection, ?string $name = null): void
     {
         $connection->close();
         $clearProperties = function () {
@@ -137,5 +138,10 @@ class DbManager extends \think\DbManager
             $this->builder = null;
         };
         $clearProperties->call($connection);
+
+        if ($name !== null) {
+            $key = "think-orm.connections.$name";
+            Context::set($key, null);
+        }
     }
 }
