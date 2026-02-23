@@ -547,16 +547,10 @@ class MysqlBackup
      */
     public function downFile(string $folder, int $pid = 0)
     {
-        $ext  = $this->config['compress'] ? '.sql.gz' : '.sql';
-        $file = $this->config['path'].$folder.'/'.$pid.$ext;
-        if(file_exists($file)){
-            ob_end_clean();
-            header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-            header('Content-Description: File Transfer');
-            header('Content-Type: application/octet-stream');
-            header('Content-Length: '.filesize($file));
-            header('Content-Disposition: attachment; filename='.basename($file));
-            readfile($file);
+        $ext = $this->config['compress'] ? '.sql.gz' : '.sql';
+        $filePath = $this->config['path'].$folder.'/'.$pid.$ext;
+        if(file_exists($filePath)){
+            return response()->download($filePath, $folder . '_part_' . $pid . $ext);
         }else{
             throw new \Exception("{$folder} File is abnormal");
         }

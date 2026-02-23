@@ -122,7 +122,7 @@ class Database extends AdminBase
     public function download()
     {
         $d = $this->only(['filename','@pid/d'],'get');
-        $this->db->downFile($d['filename'], $d['pid']);
+        return $this->db->downFile($d['filename'], $d['pid']);
     }
 
     /**
