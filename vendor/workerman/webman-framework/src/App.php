@@ -25,7 +25,6 @@ use ReflectionEnum;
 use support\exception\InputValueException;
 use support\exception\PageNotFoundException;
 use think\Model as ThinkModel;
-use InvalidArgumentException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -34,17 +33,16 @@ use ReflectionException;
 use ReflectionFunction;
 use ReflectionFunctionAbstract;
 use ReflectionMethod;
-use support\exception\BusinessException;
 use support\exception\MissingInputException;
 use support\exception\RecordNotFoundException;
 use support\exception\InputTypeException;
 use Throwable;
-use Webman\Context;
 use Webman\Exception\ExceptionHandler;
 use Webman\Exception\ExceptionHandlerInterface;
 use Webman\Http\Request;
 use Webman\Http\Response;
 use Webman\Route\Route as RouteObject;
+use support\annotation\route\Route as RouteAttribute;
 use Workerman\Connection\TcpConnection;
 use Workerman\Protocols\Http;
 use Workerman\Worker;
@@ -67,6 +65,7 @@ use function is_array;
 use function is_dir;
 use function is_file;
 use function is_numeric;
+use function is_object;
 use function is_string;
 use function key;
 use function method_exists;
@@ -91,6 +90,16 @@ class App
      * @var callable[]
      */
     protected static $callbacks = [];
+
+    /**
+     * @var array<string, ReflectionFunctionAbstract>
+     */
+    protected static array $reflectorCache = [];
+
+    /**
+     * @var array<string, array<int, array<string, mixed>>>
+     */
+    protected static array $parameterMetadataCache = [];
 
     /**
      * @var Worker
@@ -174,6 +183,15 @@ class App
             $app = $controllerAndAction['app'];
             $controller = $controllerAndAction['controller'];
             $action = $controllerAndAction['action'];
+
+            if ($methodNotAllowed = static::defaultRouteMethodNotAllowedResponse($controller, $action, $request->method())) {
+                $callback = $methodNotAllowed;
+                static::collectCallbacks($key, [$callback, $plugin, $app, $controller, $action, null]);
+                [$callback, $request->plugin, $request->app, $request->controller, $request->action, $request->route] = static::$callbacks[$key];
+                static::send($connection, $callback($request), $request);
+                return null;
+            }
+
             $callback = static::getCallback($plugin, $app, [$controller, $action]);
             static::collectCallbacks($key, [$callback, $plugin, $app, $controller, $action, null]);
             [$callback, $request->plugin, $request->app, $request->controller, $request->action, $request->route] = static::$callbacks[$key];
@@ -182,6 +200,59 @@ class App
             static::send($connection, static::exceptionResponse($e, $request), $request);
         }
         return null;
+    }
+
+    /**
+     * Method allowlist for default route (no explicit route path).
+     * If action method has Route attributes with empty path, they are treated as allowed methods.
+     * Returns a cached callback producing 405 response when current method is not allowed, otherwise null.
+     * @param string $controllerClass
+     * @param string $action
+     * @param string $httpMethod
+     * @return callable|null
+     */
+    protected static function defaultRouteMethodNotAllowedResponse(string $controllerClass, string $action, string $httpMethod): ?callable
+    {
+        $httpMethod = strtoupper($httpMethod);
+        static $allowedCache = [];
+        $cacheKey = $controllerClass . '::' . $action;
+
+        if (!isset($allowedCache[$cacheKey])) {
+            $allowed = [];
+            try {
+                if (method_exists($controllerClass, $action)) {
+                    $ref = new ReflectionMethod($controllerClass, $action);
+                    $attrs = $ref->getAttributes(RouteAttribute::class, \ReflectionAttribute::IS_INSTANCEOF);
+                    foreach ($attrs as $attr) {
+                        /** @var RouteAttribute $route */
+                        $route = $attr->newInstance();
+                        if ($route->path !== null) {
+                            continue;
+                        }
+                        foreach ($route->methods as $m) {
+                            $m = strtoupper((string)$m);
+                            $allowed[$m] = $m;
+                        }
+                    }
+                }
+            } catch (Throwable $e) {
+            }
+            $allowedCache[$cacheKey] = $allowed;
+            if (count($allowedCache) > 1024) {
+                unset($allowedCache[key($allowedCache)]);
+            }
+        } else {
+            $allowed = $allowedCache[$cacheKey];
+        }
+
+        if (!$allowed || isset($allowed[$httpMethod])) {
+            return null;
+        }
+
+        $allowHeader = implode(', ', array_values($allowed));
+        return static function () use ($allowHeader) {
+            return new Response(405, ['Allow' => $allowHeader], '405 Method Not Allowed');
+        };
     }
 
     /**
@@ -204,7 +275,7 @@ class App
     protected static function collectCallbacks(string $key, array $data)
     {
         static::$callbacks[$key] = $data;
-        if (count(static::$callbacks) >= 1024) {
+        if (count(static::$callbacks) > 1024) {
             unset(static::$callbacks[key(static::$callbacks)]);
         }
     }
@@ -218,20 +289,26 @@ class App
      */
     protected static function unsafeUri(TcpConnection $connection, string $path, $request): bool
     {
-        if (
-            !$path ||
-            $path[0] !== '/' ||
-            strpos($path, '/../') !== false ||
-            substr($path, -3) === '/..' ||
-            strpos($path, "\\") !== false ||
-            strpos($path, "\0") !== false
-        ) {
+        if (!$path || $path[0] !== '/' || static::containsPathTraversal($path)) {
             $callback = static::getFallback('', 400);
             $request->plugin = $request->app = $request->controller = $request->action = '';
             static::send($connection, $callback($request, 400), $request);
             return true;
         }
         return false;
+    }
+
+    /**
+     * Check if a path contains directory traversal or dangerous sequences.
+     * @param string $path
+     * @return bool
+     */
+    protected static function containsPathTraversal(string $path): bool
+    {
+        return strpos($path, '/../') !== false
+            || substr($path, -3) === '/..'
+            || strpos($path, "\\") !== false
+            || strpos($path, "\0") !== false;
     }
 
     /**
@@ -282,7 +359,7 @@ class App
             $response->exception($e);
             return $response;
         } catch (Throwable $e) {
-            $response = new Response(500, [], static::config($plugin ?? '', 'app.debug', true) ? (string)$e : $e->getMessage());
+            $response = new Response(500, [], static::config($plugin ?? '', 'app.debug') ? (string)$e : $e->getMessage());
             $response->exception($e);
             return $response;
         }
@@ -319,15 +396,30 @@ class App
 
         $needInject = static::isNeedInject($call, $args);
         $anonymousArgs = array_values($args);
+        // Pre-compute return type for Response check optimization in middleware chain
+        $alwaysReturnsResponse = false;
+        if ($middlewares) {
+            try {
+                $returnType = static::getReflector($call)->getReturnType();
+                $alwaysReturnsResponse = $returnType instanceof \ReflectionNamedType
+                    && !$returnType->allowsNull()
+                    && is_a($returnType->getName(), Response::class, true);
+            } catch (Throwable $e) {
+            }
+        }
         if ($isController) {
             $controllerReuse = static::config($plugin, 'app.controller_reuse', true);
             if (!$controllerReuse) {
                 if ($needInject) {
-                    $call = function ($request) use ($call, $plugin, $args, $container) {
+                    // Pre-compute metadata at closure creation time
+                    $reflector = static::getReflector($call);
+                    $metadataList = static::getMethodParameterMetadata($reflector);
+                    $debug = static::config($plugin, 'app.debug');
+                    $call = function ($request) use ($call, $plugin, $args, $container, $metadataList, $debug) {
                         $call[0] = $container->make($call[0]);
-                        $reflector = static::getReflector($call);
-                        $args = array_values(static::resolveMethodDependencies($container, $request, array_merge($request->all(), $args), $reflector, static::config($plugin, 'app.debug')));
-                        return $call(...$args);
+                        $inputs = $args ? array_merge($request->all(), $args) : $request->all();
+                        $resolvedArgs = array_values(static::resolveMethodDependenciesFromMetadata($container, $request, $inputs, $metadataList, $debug));
+                        return $call(...$resolvedArgs);
                     };
                     $needInject = false;
                 } else {
@@ -342,10 +434,34 @@ class App
         }
 
         if ($needInject) {
-            $call = static::resolveInject($plugin, $call, $args);
+            $call = static::resolveInject($container, $call, $args, static::config($plugin, 'app.debug'));
         }
 
         if ($middlewares) {
+            if ($alwaysReturnsResponse) {
+                $innermost = function ($request) use ($call, $anonymousArgs) {
+                    try {
+                        return $call($request, ...$anonymousArgs);
+                    } catch (Throwable $e) {
+                        return static::exceptionResponse($e, $request);
+                    }
+                };
+            } else {
+                $innermost = function ($request) use ($call, $anonymousArgs) {
+                    try {
+                        $response = $call($request, ...$anonymousArgs);
+                    } catch (Throwable $e) {
+                        return static::exceptionResponse($e, $request);
+                    }
+                    if (!$response instanceof Response) {
+                        if (!is_string($response)) {
+                            $response = static::stringify($response);
+                        }
+                        $response = new Response(200, [], $response);
+                    }
+                    return $response;
+                };
+            }
             $callback = array_reduce($middlewares, function ($carry, $pipe) {
                 return function ($request) use ($carry, $pipe) {
                     try {
@@ -354,20 +470,7 @@ class App
                         return static::exceptionResponse($e, $request);
                     }
                 };
-            }, function ($request) use ($call, $anonymousArgs) {
-                try {
-                    $response = $call($request, ...$anonymousArgs);
-                } catch (Throwable $e) {
-                    return static::exceptionResponse($e, $request);
-                }
-                if (!$response instanceof Response) {
-                    if (!is_string($response)) {
-                        $response = static::stringify($response);
-                    }
-                    $response = new Response(200, [], $response);
-                }
-                return $response;
-            });
+            }, $innermost);
         } else {
             if (!$anonymousArgs) {
                 $callback = $call;
@@ -382,19 +485,24 @@ class App
 
     /**
      * ResolveInject.
-     * @param string $plugin
+     * @param ContainerInterface $container
      * @param array|Closure $call
-     * @param $args
+     * @param array $args
+     * @param bool $debug
      * @return Closure
      * @see Dependency injection through reflection information
      */
-    protected static function resolveInject(string $plugin, $call, $args): Closure
+    protected static function resolveInject(ContainerInterface $container, $call, array $args, bool $debug): Closure
     {
-        return function (Request $request) use ($plugin, $call, $args) {
-            $reflector = static::getReflector($call);
-            $args = array_values(static::resolveMethodDependencies(static::container($plugin), $request,
-                array_merge($request->all(), $args), $reflector, static::config($plugin, 'app.debug')));
-            return $call(...$args);
+        // Pre-compute metadata at closure creation time (once), not at execution time (every request)
+        $metadataList = static::getMethodParameterMetadata(static::getReflector($call));
+
+        return function (Request $request) use ($container, $call, $args, $metadataList, $debug) {
+            $inputs = $args ? array_merge($request->all(), $args) : $request->all();
+            $resolvedArgs = array_values(static::resolveMethodDependenciesFromMetadata(
+                $container, $request, $inputs, $metadataList, $debug
+            ));
+            return $call(...$resolvedArgs);
         };
     }
 
@@ -424,7 +532,13 @@ class App
             $parameterName = $parameter->name;
             $keys[] = $parameterName;
             if ($parameter->hasType()) {
-                $typeName = $parameter->getType()->getName();
+                $type = $parameter->getType();
+                if (!$type instanceof \ReflectionNamedType) {
+                    throw new \RuntimeException(
+                        sprintf('Union/intersection types are not supported for controller parameter $%s. Use a single type instead.', $parameter->name)
+                    );
+                }
+                $typeName = $type->getName();
                 if (!in_array($typeName, $adaptersList)) {
                     $needInject = true;
                     continue;
@@ -464,7 +578,11 @@ class App
         if (!$firstParameter->hasType()) {
             return $firstParameter->getName() !== 'request';
         }
-        if (!is_a(static::$requestClass, $firstParameter->getType()->getName(), true)) {
+        $firstType = $firstParameter->getType();
+        if (!$firstType instanceof \ReflectionNamedType) {
+            return true;
+        }
+        if (!is_a(static::$requestClass, $firstType->getName(), true)) {
             return true;
         }
 
@@ -479,10 +597,43 @@ class App
      */
     protected static function getReflector($call)
     {
-        if ($call instanceof Closure || is_string($call)) {
-            return new ReflectionFunction($call);
+        $cacheKey = static::getReflectorCacheKey($call);
+        if ($cacheKey !== null && isset(static::$reflectorCache[$cacheKey])) {
+            return static::$reflectorCache[$cacheKey];
         }
-        return new ReflectionMethod($call[0], $call[1]);
+
+        if ($call instanceof Closure || is_string($call)) {
+            $reflector = new ReflectionFunction($call);
+        } else {
+            $reflector = new ReflectionMethod($call[0], $call[1]);
+        }
+
+        if ($cacheKey !== null) {
+            static::$reflectorCache[$cacheKey] = $reflector;
+            if (count(static::$reflectorCache) > 1024) {
+                unset(static::$reflectorCache[key(static::$reflectorCache)]);
+            }
+        }
+
+        return $reflector;
+    }
+
+    /**
+     * Get reflector cache key.
+     * @param mixed $call
+     * @return string|null
+     */
+    protected static function getReflectorCacheKey($call): ?string
+    {
+        if (is_string($call)) {
+            return 'func:' . $call;
+        }
+        if (is_array($call) && isset($call[0], $call[1])) {
+            $class = is_object($call[0]) ? get_class($call[0]) : $call[0];
+            return 'method:' . $class . '::' . $call[1];
+        }
+        // Closures may be short-lived; avoid caching to prevent key reuse risks.
+        return null;
     }
 
     /**
@@ -497,26 +648,41 @@ class App
      */
     protected static function resolveMethodDependencies(ContainerInterface $container, Request $request, array $inputs, ReflectionFunctionAbstract $reflector, bool $debug): array
     {
-        $parameters = [];
-        foreach ($reflector->getParameters() as $parameter) {
-            $parameterName = $parameter->name;
-            $type = $parameter->getType();
-            $typeName = $type?->getName();
+        $metadataList = static::getMethodParameterMetadata($reflector);
+        return static::resolveMethodDependenciesFromMetadata($container, $request, $inputs, $metadataList, $debug);
+    }
 
-            if ($typeName && is_a($request, $typeName)) {
+    /**
+     * Return dependent parameters from pre-computed metadata.
+     * @param ContainerInterface $container
+     * @param Request $request
+     * @param array $inputs
+     * @param array $metadataList
+     * @param bool $debug
+     * @return array
+     * @throws ReflectionException
+     */
+    protected static function resolveMethodDependenciesFromMetadata(ContainerInterface $container, Request $request, array $inputs, array $metadataList, bool $debug): array
+    {
+        $parameters = [];
+        foreach ($metadataList as $metadata) {
+            $parameterName = $metadata['name'];
+            $typeName = $metadata['type'];
+
+            if (!empty($metadata['isRequest'])) {
                 $parameters[$parameterName] = $request;
                 continue;
             }
 
             if (!array_key_exists($parameterName, $inputs)) {
-                if (!$parameter->isDefaultValueAvailable()) {
-                    if (!$typeName || (!class_exists($typeName) && !enum_exists($typeName)) || enum_exists($typeName)) {
+                if (!$metadata['hasDefault']) {
+                    if (!$typeName || (!$metadata['isClass'] && !$metadata['isEnum']) || $metadata['isEnum']) {
                         throw (new MissingInputException())->data([
                             'parameter' => $parameterName,
                         ])->debug($debug);
                     }
                 } else {
-                    $parameters[$parameterName] = $parameter->getDefaultValue();
+                    $parameters[$parameterName] = $metadata['default'];
                     continue;
                 }
             }
@@ -557,41 +723,36 @@ class App
                     break;
                 default:
                     $subInputs = is_array($parameterValue) ? $parameterValue : [];
-                    if (is_a($typeName, Model::class, true)) {
+                    if (!empty($metadata['isModel'])) {
                         $parameters[$parameterName] = $container->make($typeName, [
                             'attributes' => $subInputs
                         ]);
                         break;
                     }
-                    if (is_a($typeName, ThinkModel::class, true)) {
+                    if (!empty($metadata['isThinkModel'])) {
                         $parameters[$parameterName] = $container->make($typeName, [
                             'data' => $subInputs
                         ]);
                         break;
                     }
-                    if (enum_exists($typeName)) {
-                        $reflection = new ReflectionEnum($typeName);
-                        if ($reflection->hasCase($parameterValue)) {
-                            $parameters[$parameterName] = $reflection->getCase($parameterValue)->getValue();
+                    if (!empty($metadata['isEnum'])) {
+                        // Use pre-computed enum case mappings (avoids per-request ReflectionEnum)
+                        if (isset($metadata['enumCases'][$parameterValue])) {
+                            $parameters[$parameterName] = $metadata['enumCases'][$parameterValue];
                             break;
-                        } elseif ($reflection->isBacked()) {
-                            foreach ($reflection->getCases() as $case) {
-                                if ($case->getValue()->value == $parameterValue) {
-                                    $parameters[$parameterName] = $case->getValue();
-                                    break;
-                                }
-                            }
                         }
-                        if (!array_key_exists($parameterName, $parameters)) {
-                            throw (new InputValueException())->data([
-                                'parameter' => $parameterName,
-                                'enum' => $typeName
-                            ])->debug($debug);
+                        if (!empty($metadata['enumIsBacked']) && isset($metadata['enumBackedValues'][$parameterValue])) {
+                            $parameters[$parameterName] = $metadata['enumBackedValues'][$parameterValue];
+                            break;
                         }
-                        break;
+                        throw (new InputValueException())->data([
+                            'parameter' => $parameterName,
+                            'enum' => $typeName
+                        ])->debug($debug);
                     }
-                    if (is_array($subInputs) && $constructor = (new ReflectionClass($typeName))->getConstructor()) {
-                        $parameters[$parameterName] = $container->make($typeName, static::resolveMethodDependencies($container, $request, $subInputs, $constructor, $debug));
+                    if (is_array($subInputs) && !empty($metadata['hasConstructor'])) {
+                        $constructorReflector = static::getReflector([$typeName, '__construct']);
+                        $parameters[$parameterName] = $container->make($typeName, static::resolveMethodDependencies($container, $request, $subInputs, $constructorReflector, $debug));
                     } else {
                         $parameters[$parameterName] = $container->make($typeName);
                     }
@@ -599,6 +760,107 @@ class App
             }
         }
         return $parameters;
+    }
+
+    /**
+     * Get method parameter metadata from cache.
+     * @param ReflectionFunctionAbstract $reflector
+     * @return array<int, array<string, mixed>>
+     * @throws ReflectionException
+     */
+    protected static function getMethodParameterMetadata(ReflectionFunctionAbstract $reflector): array
+    {
+        $cacheKey = static::getParameterMetadataCacheKey($reflector);
+        if ($cacheKey !== null && isset(static::$parameterMetadataCache[$cacheKey])) {
+            return static::$parameterMetadataCache[$cacheKey];
+        }
+
+        $metadataList = [];
+        foreach ($reflector->getParameters() as $parameter) {
+            $type = $parameter->getType();
+            if ($type !== null && !$type instanceof \ReflectionNamedType) {
+                throw new \RuntimeException(
+                    sprintf('Union/intersection types are not supported for controller parameter $%s. Use a single type instead.', $parameter->name)
+                );
+            }
+            $typeName = $type?->getName();
+            $hasDefault = $parameter->isDefaultValueAvailable();
+            $isEnum = $typeName && enum_exists($typeName);
+            $isClass = $typeName && class_exists($typeName);
+            $isRequest = $typeName && is_a(static::$requestClass, $typeName, true);
+            $isModel = $typeName && is_a($typeName, Model::class, true);
+            $isThinkModel = $typeName && is_a($typeName, ThinkModel::class, true);
+            $metadata = [
+                'name' => $parameter->name,
+                'type' => $typeName,
+                'hasDefault' => $hasDefault,
+                'default' => $hasDefault ? $parameter->getDefaultValue() : null,
+                'isRequest' => $isRequest,
+                'isEnum' => $isEnum,
+                'isClass' => $isClass,
+                'isModel' => $isModel,
+                'isThinkModel' => $isThinkModel,
+            ];
+            // Pre-compute enum case mappings to avoid per-request ReflectionEnum
+            if ($isEnum) {
+                $enumReflection = new ReflectionEnum($typeName);
+                $enumCases = [];
+                $enumBackedValues = [];
+                $isBacked = $enumReflection->isBacked();
+                foreach ($enumReflection->getCases() as $case) {
+                    $caseValue = $case->getValue();
+                    $enumCases[$case->getName()] = $caseValue;
+                    if ($isBacked) {
+                        $enumBackedValues[$caseValue->value] = $caseValue;
+                    }
+                }
+                $metadata['enumCases'] = $enumCases;
+                $metadata['enumBackedValues'] = $enumBackedValues;
+                $metadata['enumIsBacked'] = $isBacked;
+            }
+            // Pre-compute class constructor info to avoid per-request ReflectionClass
+            if ($isClass && !$isRequest && !$isEnum && !$isModel && !$isThinkModel) {
+                $classRef = new ReflectionClass($typeName);
+                $constructor = $classRef->getConstructor();
+                $metadata['hasConstructor'] = $constructor !== null;
+                if ($constructor) {
+                    // Pre-cache constructor reflector for use by getReflector()
+                    $constructorKey = 'method:' . $typeName . '::__construct';
+                    if (!isset(static::$reflectorCache[$constructorKey])) {
+                        static::$reflectorCache[$constructorKey] = $constructor;
+                    }
+                }
+            }
+            $metadataList[] = $metadata;
+        }
+
+        if ($cacheKey !== null) {
+            static::$parameterMetadataCache[$cacheKey] = $metadataList;
+            if (count(static::$parameterMetadataCache) > 1024) {
+                unset(static::$parameterMetadataCache[key(static::$parameterMetadataCache)]);
+            }
+        }
+
+        return $metadataList;
+    }
+
+    /**
+     * Get parameter metadata cache key.
+     * @param ReflectionFunctionAbstract $reflector
+     * @return string|null
+     */
+    protected static function getParameterMetadataCacheKey(ReflectionFunctionAbstract $reflector): ?string
+    {
+        if ($reflector instanceof ReflectionMethod) {
+            return 'method:' . $reflector->getDeclaringClass()->getName() . '::' . $reflector->getName();
+        }
+        if ($reflector instanceof ReflectionFunction && $reflector->isClosure()) {
+            return null;
+        }
+        if ($reflector instanceof ReflectionFunction) {
+            return 'func:' . $reflector->getName();
+        }
+        return null;
     }
 
     /**
@@ -713,7 +975,7 @@ class App
             }
             static::collectCallbacks($key, [function () use ($file) {
                 return static::execPhpFile($file);
-            }, '', '', '', '', null]);
+            }, $plugin, '', '', '', null]);
             [, $request->plugin, $request->app, $request->controller, $request->action, $request->route] = static::$callbacks[$key];
             static::send($connection, static::execPhpFile($file), $request);
             return true;
@@ -749,10 +1011,16 @@ class App
         // Remove the reference of request to session.
         unset($request->context['session']);
         $keepAlive = $request->header('connection');
-        if (($keepAlive === null && $request->protocolVersion() === '1.1')
-            || $keepAlive === 'keep-alive' || $keepAlive === 'Keep-Alive'
-            || (is_a($response, Response::class) && $response->getHeader('Transfer-Encoding') === 'chunked')
-        ) {
+        if ($keepAlive === null) {
+            if ($request->protocolVersion() === '1.1') {
+                $connection->send($response);
+                return;
+            }
+        } elseif (\strcasecmp($keepAlive, 'keep-alive') === 0) {
+            $connection->send($response);
+            return;
+        }
+        if ($response instanceof Response && $response->getHeader('Transfer-Encoding') === 'chunked') {
             $connection->send($response);
             return;
         }
@@ -768,6 +1036,9 @@ class App
     protected static function parseControllerAction(string $path)
     {
         $path = str_replace(['-', '//'], ['', '/'], $path);
+        if (static::containsPathTraversal($path)) {
+            return false;
+        }
         static $cache = [];
         if (isset($cache[$path])) {
             return $cache[$path];
@@ -994,8 +1265,9 @@ class App
         // Try to include php file.
         try {
             include $file;
-        } catch (Exception $e) {
-            echo $e;
+        } catch (Throwable $e) {
+            ob_get_clean();
+            throw $e;
         }
         return ob_get_clean();
     }

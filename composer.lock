@@ -4447,21 +4447,24 @@
         },
         {
             "name": "webman/rate-limiter",
-            "version": "v1.1.7",
+            "version": "v1.1.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webman-php/rate-limiter.git",
-                "reference": "d8e981a4a1181e5e30e60b73f37665d4d44a354d"
+                "reference": "4deb429c2c38960bd251db299bd4a127389eb9f2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webman-php/rate-limiter/zipball/d8e981a4a1181e5e30e60b73f37665d4d44a354d",
-                "reference": "d8e981a4a1181e5e30e60b73f37665d4d44a354d",
+                "url": "https://api.github.com/repos/webman-php/rate-limiter/zipball/4deb429c2c38960bd251db299bd4a127389eb9f2",
+                "reference": "4deb429c2c38960bd251db299bd4a127389eb9f2",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.0",
                 "workerman/webman-framework": ">=1.5.15"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^10.5"
             },
             "type": "library",
             "autoload": {
@@ -4476,9 +4479,9 @@
             "description": "Webman plugin webman/rate-limiter",
             "support": {
                 "issues": "https://github.com/webman-php/rate-limiter/issues",
-                "source": "https://github.com/webman-php/rate-limiter/tree/v1.1.7"
+                "source": "https://github.com/webman-php/rate-limiter/tree/v1.1.8"
             },
-            "time": "2025-12-05T19:05:21+00:00"
+            "time": "2026-02-18T15:10:50+00:00"
         },
         {
             "name": "webman/redis",
@@ -4804,16 +4807,16 @@
         },
         {
             "name": "workerman/webman-framework",
-            "version": "v2.1.4",
+            "version": "2.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/walkor/webman-framework.git",
-                "reference": "f19d1f9e47cc50210555f0b63db5ae1dd584f793"
+                "reference": "2da4e49259d41925f1732f95f6fb052a3f42ceee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/walkor/webman-framework/zipball/f19d1f9e47cc50210555f0b63db5ae1dd584f793",
-                "reference": "f19d1f9e47cc50210555f0b63db5ae1dd584f793",
+                "url": "https://api.github.com/repos/walkor/webman-framework/zipball/2da4e49259d41925f1732f95f6fb052a3f42ceee",
+                "reference": "2da4e49259d41925f1732f95f6fb052a3f42ceee",
                 "shasum": ""
             },
             "require": {
@@ -4866,7 +4869,7 @@
                 "source": "https://github.com/walkor/webman-framework",
                 "wiki": "https://doc.workerman.net/"
             },
-            "time": "2025-11-10T06:59:23+00:00"
+            "time": "2026-02-20T02:37:25+00:00"
         },
         {
             "name": "workerman/workerman",

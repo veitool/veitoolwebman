@@ -7,9 +7,20 @@
     "php": ">=8.0",
     "workerman/webman-framework": ">=1.5.15"
   },
+  "require-dev": {
+    "phpunit/phpunit": "^10.5"
+  },
   "autoload": {
     "psr-4": {
       "Webman\\RateLimiter\\": "src"
     }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "phpunit"
   }
 }

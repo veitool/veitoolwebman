@@ -24,7 +24,14 @@ use RecursiveIteratorIterator;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionException;
-use Webman\Annotation\DisableDefaultRoute;
+use ReflectionMethod;
+use RuntimeException;
+use support\annotation\Middleware as MiddlewareAttribute;
+use support\annotation\route\DisableDefaultRoute;
+use support\annotation\route\Route as RouteAttribute;
+use support\annotation\route\RouteGroup as RouteGroupAttribute;
+use Webman\Finder\FileInfo;
+use Webman\Finder\ControllerFinder;
 use Webman\Route\Route as RouteObject;
 use function array_diff;
 use function array_values;
@@ -103,6 +110,17 @@ class Route
     protected static $allRoutes = [];
 
     /**
+     * Index for conflict detection: ["METHOD path" => "callback string"]
+     * @var array<string, string>
+     */
+    protected static array $methodPathIndex = [];
+
+    /**
+     * @var string|null
+     */
+    protected static ?string $registeringSource = null;
+
+    /**
      * @var RouteObject[]
      */
     protected $routes = [];
@@ -113,6 +131,7 @@ class Route
     protected $children = [];
 
     /**
+     * Add GET route.
      * @param string $path
      * @param callable|mixed $callback
      * @return RouteObject
@@ -123,6 +142,7 @@ class Route
     }
 
     /**
+     * Add POST route.
      * @param string $path
      * @param callable|mixed $callback
      * @return RouteObject
@@ -133,6 +153,7 @@ class Route
     }
 
     /**
+     * Add PUT route.
      * @param string $path
      * @param callable|mixed $callback
      * @return RouteObject
@@ -143,6 +164,7 @@ class Route
     }
 
     /**
+     * Add PATCH route.
      * @param string $path
      * @param callable|mixed $callback
      * @return RouteObject
@@ -153,6 +175,7 @@ class Route
     }
 
     /**
+     * Add DELETE route.
      * @param string $path
      * @param callable|mixed $callback
      * @return RouteObject
@@ -173,6 +196,7 @@ class Route
     }
 
     /**
+     * Add HEAD route.
      * @param string $path
      * @param callable|mixed $callback
      * @return RouteObject
@@ -183,6 +207,7 @@ class Route
     }
 
     /**
+     * Add OPTIONS route.
      * @param string $path
      * @param callable|mixed $callback
      * @return RouteObject
@@ -193,6 +218,7 @@ class Route
     }
 
     /**
+     * Add route.
      * @param $method
      * @param string $path
      * @param callable|mixed $callback
@@ -204,6 +230,7 @@ class Route
     }
 
     /**
+     * Add group.
      * @param string|callable $path
      * @param callable|null $callback
      * @return static
@@ -228,6 +255,7 @@ class Route
     }
 
     /**
+     * Add resource.
      * @param string $name
      * @param string $controller
      * @param array $options
@@ -268,6 +296,7 @@ class Route
     }
 
     /**
+     * Get routes.
      * @return RouteObject[]
      */
     public static function getRoutes(): array
@@ -276,8 +305,7 @@ class Route
     }
 
     /**
-     * disableDefaultRoute.
-     *
+     * Disable default route.
      * @param array|string $plugin
      * @param string|null $app
      * @return bool
@@ -314,6 +342,7 @@ class Route
     }
 
     /**
+     * Is default route disabled.
      * @param array|string $plugin
      * @param string|null $app
      * @return bool
@@ -341,6 +370,7 @@ class Route
     }
 
     /**
+     * Is default route disabled by annotation.
      * @param string $controller
      * @param string|null $action
      * @return bool
@@ -363,6 +393,7 @@ class Route
     }
 
     /**
+     * Is reflection class has default route disabled annotation.
      * @param ReflectionClass $reflectionClass
      * @return bool
      */
@@ -382,6 +413,7 @@ class Route
     }
 
     /**
+     * Add middleware.
      * @param $middleware
      * @return $this
      */
@@ -397,6 +429,7 @@ class Route
     }
 
     /**
+     * Collect route.
      * @param RouteObject $route
      */
     public function collect(RouteObject $route)
@@ -405,6 +438,7 @@ class Route
     }
 
     /**
+     * Set by name.
      * @param string $name
      * @param RouteObject $instance
      */
@@ -414,6 +448,7 @@ class Route
     }
 
     /**
+     * Get by name.
      * @param string $name
      * @return null|RouteObject
      */
@@ -423,6 +458,7 @@ class Route
     }
 
     /**
+     * Add child.
      * @param Route $route
      * @return void
      */
@@ -432,6 +468,7 @@ class Route
     }
 
     /**
+     * Get children.
      * @return Route[]
      */
     public function getChildren()
@@ -440,6 +477,7 @@ class Route
     }
 
     /**
+     * Dispatch.
      * @param string $method
      * @param string $path
      * @return array
@@ -450,6 +488,7 @@ class Route
     }
 
     /**
+     * Convert to callable.
      * @param string $path
      * @param callable|mixed $callback
      * @return callable|false|string[]
@@ -478,6 +517,7 @@ class Route
     }
 
     /**
+     * Add route.
      * @param array|string $methods
      * @param string $path
      * @param callable|mixed $callback
@@ -485,6 +525,19 @@ class Route
      */
     protected static function addRoute($methods, string $path, $callback): RouteObject
     {
+        $fullPath = static::$groupPrefix . $path;
+        foreach ((array)$methods as $method) {
+            $method = strtoupper((string)$method);
+            $key = $method . ' ' . $fullPath;
+            if (isset(static::$methodPathIndex[$key])) {
+                $old = static::$methodPathIndex[$key];
+                $new = static::callbackToString($callback);
+                $source = static::$registeringSource ? (' from ' . static::$registeringSource) : '';
+                throw new RuntimeException("Route conflict: [$key] already registered as $old, cannot register $new$source");
+            }
+            static::$methodPathIndex[$key] = static::callbackToString($callback);
+        }
+
         $route = new RouteObject($methods, static::$groupPrefix . $path, $callback);
         static::$allRoutes[] = $route;
 
@@ -507,6 +560,18 @@ class Route
         if (!is_array($paths)) {
             return;
         }
+        static::$dispatcher = null;
+        static::$collector = null;
+        static::$fallbackRoutes = [];
+        static::$fallback = [];
+        static::$nameList = [];
+        static::$disabledDefaultRoutes = [];
+        static::$disabledDefaultRouteControllers = [];
+        static::$disabledDefaultRouteActions = [];
+        static::$allRoutes = [];
+        static::$methodPathIndex = [];
+        static::$registeringSource = null;
+
         static::$dispatcher = simpleDispatcher(function (RouteCollector $route) use ($paths) {
             Route::setCollector($route);
             foreach ($paths as $configPath) {
@@ -534,6 +599,7 @@ class Route
                     require_once $file;
                 }
             }
+            static::loadAnnotationRoutes();
         });
     }
 
@@ -577,6 +643,197 @@ class Route
             static::$fallback[$plugin] = $route ? App::getCallback($plugin, 'NOT_FOUND', $route->getCallback(), ['status' => $status], false, $route) : null;
         }
         return static::$fallback[$plugin];
+    }
+
+    /**
+     * Load annotation routes.
+     * @return void
+     */
+    protected static function loadAnnotationRoutes(): void
+    {
+        $controllerFiles = ControllerFinder::files('*');
+        if (!$controllerFiles) {
+            return;
+        }
+        $routes = static::buildAnnotationRouteDefinitions($controllerFiles);
+        static::registerAnnotationRouteDefinitions($routes);
+
+    }
+
+    /**
+     * Build annotation route definitions.
+     * @param FileInfo[] $controllerFiles
+     * @return array<int,array{methods: string[], path: string, callback: array{0:string,1:string}, name: ?string, middlewares: array}>
+     */
+    protected static function buildAnnotationRouteDefinitions(array $controllerFiles): array
+    {
+        $definitions = [];
+
+        foreach ($controllerFiles as $foundFile) {
+            $meta = $foundFile->meta();
+            $controllerClass = $meta['class'] ?? null;
+            if (!$controllerClass) {
+                continue;
+            }
+
+            $file = $foundFile->getPathname();
+            if (!class_exists($controllerClass)) {
+                require_once $file;
+            }
+            if (!class_exists($controllerClass)) {
+                continue;
+            }
+
+            $ref = new ReflectionClass($controllerClass);
+            if ($ref->isAbstract() || $ref->isInterface()) {
+                continue;
+            }
+
+            $prefix = '';
+            $groupAttrs = $ref->getAttributes(RouteGroupAttribute::class, ReflectionAttribute::IS_INSTANCEOF);
+            if ($groupAttrs) {
+                /** @var RouteGroupAttribute $group */
+                $group = $groupAttrs[0]->newInstance();
+                $prefix = static::normalizeRoutePrefix($group->prefix);
+            }
+
+            foreach ($ref->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+                if ($method->isConstructor() || $method->isDestructor()) {
+                    continue;
+                }
+                if ($method->getDeclaringClass()->getName() !== $controllerClass) {
+                    continue;
+                }
+
+                $routeAttrs = $method->getAttributes(RouteAttribute::class, ReflectionAttribute::IS_INSTANCEOF);
+                if (!$routeAttrs) {
+                    continue;
+                }
+
+                foreach ($routeAttrs as $routeAttr) {
+                    /** @var RouteAttribute $route */
+                    $route = $routeAttr->newInstance();
+                    if ($route->path === null) {
+                        // Null path means "method restriction only" for default route, do not register.
+                        continue;
+                    }
+                    $path = static::normalizeRoutePath($route->path, $controllerClass . '::' . $method->getName());
+                    $fullPath = $prefix ? rtrim($prefix, '/') . $path : $path;
+
+                    $methods = [];
+                    foreach ($route->methods as $m) {
+                        $methods[] = strtoupper((string)$m);
+                    }
+
+                    $definitions[] = [
+                        'methods' => $methods,
+                        'path' => $fullPath,
+                        'callback' => [$controllerClass, $method->getName()],
+                        'name' => $route->name,
+                    ];
+                }
+            }
+        }
+
+        return $definitions;
+    }
+
+    /**
+     * Collect middlewares from attributes.
+     * @param array<ReflectionAttribute> $attributes
+     * @return array
+     */
+    protected static function collectMiddlewaresFromAttributes(array $attributes): array
+    {
+        $middlewares = [];
+        foreach ($attributes as $attribute) {
+            /** @var MiddlewareAttribute $instance */
+            $instance = $attribute->newInstance();
+            foreach ($instance->getMiddlewares() as $middleware) {
+                if (is_string($middleware)) {
+                    $middlewares[] = $middleware;
+                    continue;
+                }
+                if (is_array($middleware) && isset($middleware[0]) && is_string($middleware[0])) {
+                    $middlewares[] = $middleware[0];
+                }
+            }
+        }
+        return $middlewares;
+    }
+
+    /**
+     * Register annotation route definitions.
+     * @param array $definitions
+     * @return void
+     */
+    protected static function registerAnnotationRouteDefinitions(array $definitions): void
+    {
+        foreach ($definitions as $definition) {
+            static::$registeringSource = 'annotation ' . $definition['callback'][0] . '::' . $definition['callback'][1];
+            $route = static::add($definition['methods'], $definition['path'], $definition['callback']);
+            if (!empty($definition['name'])) {
+                $route->name($definition['name']);
+            }
+            if (!empty($definition['middlewares'])) {
+                $route->middleware($definition['middlewares']);
+            }
+            static::$registeringSource = null;
+        }
+    }
+
+    /**
+     * Normalize route prefix.
+     * @param string $prefix
+     * @return string
+     */
+    protected static function normalizeRoutePrefix(string $prefix): string
+    {
+        $prefix = trim($prefix);
+        if ($prefix === '') {
+            return '';
+        }
+        if ($prefix[0] !== '/') {
+            $prefix = '/' . $prefix;
+        }
+        return rtrim($prefix, '/');
+    }
+
+    /**
+     * Normalize route path.
+     * @param string $path
+     * @param string $source
+     * @return string
+     */
+    protected static function normalizeRoutePath(string $path, string $source): string
+    {
+        $path = trim($path);
+        if ($path === '' || $path[0] !== '/') {
+            throw new RuntimeException("Annotation route path must start with '/': $path ($source)");
+        }
+        return $path;
+    }
+
+    /**
+     * Callback to string.
+     * @param mixed $callback
+     * @return string
+     */
+    protected static function callbackToString(mixed $callback): string
+    {
+        if (is_array($callback)) {
+            $callback = array_values($callback);
+            $class = $callback[0] ?? '';
+            $method = $callback[1] ?? '';
+            return $class && $method ? ($class . '::' . $method) : json_encode($callback);
+        }
+        if ($callback instanceof \Closure) {
+            return 'Closure';
+        }
+        if (is_string($callback)) {
+            return $callback;
+        }
+        return get_debug_type($callback);
     }
 
     /**

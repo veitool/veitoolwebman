@@ -17,6 +17,7 @@ namespace Webman;
 
 use Closure;
 use ReflectionAttribute;
+use support\annotation\Middleware as MiddlewareAttribute;
 use Webman\Route\Route;
 use ReflectionClass;
 use ReflectionMethod;
@@ -33,6 +34,11 @@ class Middleware
      * @var array
      */
     protected static $instances = [];
+
+    /**
+     * @var array Cache for controller middleware resolved via reflection/attributes.
+     */
+    protected static $controllerMiddlewareCache = [];
 
     /**
      * @param mixed $allMiddlewares
@@ -88,22 +94,33 @@ class Middleware
             }
         }
         if ($isController && $controller[0] && class_exists($controller[0])) {
-            // Controller middleware annotation
-            $reflectionClass = new ReflectionClass($controller[0]);
-            self::prepareAttributeMiddlewares($middlewares, $reflectionClass);
-            // Controller middleware property
-            if ($reflectionClass->hasProperty('middleware')) {
-                $defaultProperties = $reflectionClass->getDefaultProperties();
-                $middlewaresClasses = $defaultProperties['middleware'];
-                foreach ((array)$middlewaresClasses as $className) {
-                    $middlewares[] = [$className, 'process'];
+            $cacheKey = $controller[0] . '::' . $controller[1];
+            if (isset(static::$controllerMiddlewareCache[$cacheKey])) {
+                $cached = static::$controllerMiddlewareCache[$cacheKey];
+                $middlewares = array_merge($cached['before_route'], $routeMiddlewares, $cached['after_route']);
+            } else {
+                $beforeRoute = [];
+                $afterRoute = [];
+                // Controller middleware annotation
+                $reflectionClass = new ReflectionClass($controller[0]);
+                self::prepareAttributeMiddlewares($beforeRoute, $reflectionClass);
+                // Controller middleware property
+                if ($reflectionClass->hasProperty('middleware')) {
+                    $defaultProperties = $reflectionClass->getDefaultProperties();
+                    $middlewaresClasses = $defaultProperties['middleware'];
+                    foreach ((array)$middlewaresClasses as $className) {
+                        $beforeRoute[] = [$className, 'process'];
+                    }
                 }
-            }
-            // Route middleware
-            $middlewares = array_merge($middlewares, $routeMiddlewares);
-            // Method middleware annotation
-            if ($reflectionClass->hasMethod($controller[1])) {
-                self::prepareAttributeMiddlewares($middlewares, $reflectionClass->getMethod($controller[1]));
+                // Method middleware annotation (route must be between controller and method)
+                if ($reflectionClass->hasMethod($controller[1])) {
+                    self::prepareAttributeMiddlewares($afterRoute, $reflectionClass->getMethod($controller[1]));
+                }
+                $middlewares = array_merge($beforeRoute, $routeMiddlewares, $afterRoute);
+                static::$controllerMiddlewareCache[$cacheKey] = ['before_route' => $beforeRoute, 'after_route' => $afterRoute];
+                if (count(static::$controllerMiddlewareCache) > 1024) {
+                    unset(static::$controllerMiddlewareCache[key(static::$controllerMiddlewareCache)]);
+                }
             }
         } else {
             // Route middleware
@@ -123,16 +140,13 @@ class Middleware
      */
     private static function prepareAttributeMiddlewares(array &$middlewares, ReflectionClass|ReflectionMethod $reflection): void
     {
-        if ($reflection instanceof ReflectionClass && $parent_ref = $reflection->getParentClass()){
+        if ($reflection instanceof ReflectionClass && $parent_ref = $reflection->getParentClass()) {
             self::prepareAttributeMiddlewares($middlewares, $parent_ref);
         }
-        $middlewareAttributes = $reflection->getAttributes(Annotation\Middleware::class, ReflectionAttribute::IS_INSTANCEOF);
+        $middlewareAttributes = $reflection->getAttributes(MiddlewareAttribute::class, ReflectionAttribute::IS_INSTANCEOF);
         foreach ($middlewareAttributes as $middlewareAttribute) {
             $middlewareAttributeInstance = $middlewareAttribute->newInstance();
             $middlewares = array_merge($middlewares, $middlewareAttributeInstance->getMiddlewares());
-        }
-        if (method_exists($reflection, 'getParentClass') && $reflection->getParentClass()) {
-            self::prepareAttributeMiddlewares($middlewares, $reflection->getParentClass());
         }
     }
 
