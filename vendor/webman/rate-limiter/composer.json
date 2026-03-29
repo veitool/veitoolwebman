@@ -3,6 +3,7 @@
   "type": "library",
   "license": "MIT",
   "description": "Webman plugin webman/rate-limiter",
+  "abandoned": "webman/limiter",
   "require": {
     "php": ">=8.0",
     "workerman/webman-framework": ">=1.5.15"

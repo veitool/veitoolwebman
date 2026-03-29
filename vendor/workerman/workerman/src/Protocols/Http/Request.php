@@ -277,7 +277,10 @@ class Request implements Stringable
      */
     public function path(): string
     {
-        return $this->data['path'] ??= (string)parse_url($this->uri(), PHP_URL_PATH);
+        if (!isset($this->data['path'])) {
+            $this->parseUriComponents();
+        }
+        return $this->data['path'];
     }
 
     /**
@@ -287,7 +290,23 @@ class Request implements Stringable
      */
     public function queryString(): string
     {
-        return $this->data['query_string'] ??= (string)parse_url($this->uri(), PHP_URL_QUERY);
+        if (!isset($this->data['query_string'])) {
+            $this->parseUriComponents();
+        }
+        return $this->data['query_string'];
+    }
+
+    /**
+     * Parse URI into path and query string components (single parse_url call).
+     *
+     * @return void
+     */
+    protected function parseUriComponents(): void
+    {
+        $uri = $this->uri();
+        $parsed = parse_url($uri);
+        $this->data['path'] = $parsed['path'] ?? '/';
+        $this->data['query_string'] = $parsed['query'] ?? '';
     }
 
     /**
@@ -311,11 +330,15 @@ class Request implements Stringable
     public function sessionId(?string $sessionId = null): string
     {
         if ($sessionId) {
-            unset($this->context['sid']);
+            unset($this->context['sid'], $this->context['session']);
         }
         if (!isset($this->context['sid'])) {
             $sessionName = Session::$name;
             $sid = $sessionId ? '' : $this->cookie($sessionName);
+            // Strip surrounding double quotes (RFC 6265 allows DQUOTE-wrapped cookie values).
+            if (is_string($sid) && isset($sid[1]) && $sid[0] === '"' && $sid[-1] === '"') {
+                $sid = substr($sid, 1, -1);
+            }
             $sid = $this->isValidSessionId($sid) ? $sid : '';
             if ($sid === '') {
                 if (!$this->connection) {
@@ -338,7 +361,7 @@ class Request implements Stringable
      */
     public function isValidSessionId(mixed $sessionId): bool
     {
-        return is_string($sessionId) && preg_match('/^[a-zA-Z0-9"]+$/', $sessionId);
+        return is_string($sessionId) && preg_match('/^[a-zA-Z0-9,-]{16,256}$/', $sessionId);
     }
 
     /**
@@ -361,6 +384,8 @@ class Request implements Stringable
         $cookieParams = Session::getCookieParams();
         $sessionName = Session::$name;
         $this->setSidCookie($sessionName, $newSid, $cookieParams);
+        $this->context['sid'] = $newSid;
+        $this->context['session'] = $session;
         return $newSid;
     }
 
@@ -649,11 +674,15 @@ class Request implements Stringable
      * Create session id.
      *
      * @return string
-     * @throws Exception
+     * @throws RuntimeException
      */
     public static function createSessionId(): string
     {
-        return bin2hex(pack('d', microtime(true)) . random_bytes(8));
+        $sid = session_create_id();
+        if ($sid === false) {
+            throw new RuntimeException('session_create_id() failed');
+        }
+        return $sid;
     }
 
     /**

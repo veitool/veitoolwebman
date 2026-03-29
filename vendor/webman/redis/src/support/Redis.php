@@ -177,6 +177,8 @@ use function in_array;
  * @method static mixed pubSub($keyword, $argument = null)
  * Generic methods
  * @method static mixed rawCommand(...$commandAndArgs)
+ * Pipeline methods
+ * @method static RedisClient|array pipeline(callable|null $callback = null)
  * Transactions methods
  * @method static RedisClient multi()
  * @method static mixed exec()

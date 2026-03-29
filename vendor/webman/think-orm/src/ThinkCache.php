@@ -12,12 +12,12 @@ use ReflectionException;
 use support\think\Cache;
 
 /**
- * 缓存管理类
+ * Cache adapter for ThinkORM.
  */
 class ThinkCache implements CacheInterface
 {
     /**
-     * 清空缓冲池
+     * Clear the entire cache pool.
      * @access public
      * @return bool
      * @throws ReflectionException
@@ -28,10 +28,10 @@ class ThinkCache implements CacheInterface
     }
 
     /**
-     * 读取缓存
+     * Get a cache entry.
      * @access public
-     * @param string $key 缓存变量名
-     * @param mixed $default 默认值
+     * @param string $key Cache key
+     * @param mixed $default Default value if missing
      * @return mixed
      * @throws InvalidArgumentException|ReflectionException
      */
@@ -41,11 +41,11 @@ class ThinkCache implements CacheInterface
     }
 
     /**
-     * 写入缓存
+     * Set a cache entry.
      * @access public
-     * @param string $key 缓存变量名
-     * @param mixed $value 存储数据
-     * @param int|DateTimeInterface|DateInterval $ttl 有效时间 0为永久
+     * @param string $key Cache key
+     * @param mixed $value Value to store
+     * @param int|DateTimeInterface|DateInterval $ttl TTL; 0 means no expiry
      * @return bool
      * @throws InvalidArgumentException|ReflectionException
      */
@@ -55,9 +55,9 @@ class ThinkCache implements CacheInterface
     }
 
     /**
-     * 删除缓存
+     * Delete a cache entry.
      * @access public
-     * @param string $key 缓存变量名
+     * @param string $key Cache key
      * @return bool
      * @throws InvalidArgumentException|ReflectionException
      */
@@ -67,10 +67,10 @@ class ThinkCache implements CacheInterface
     }
 
     /**
-     * 读取缓存
+     * Get multiple cache entries.
      * @access public
-     * @param iterable $keys 缓存变量名
-     * @param mixed $default 默认值
+     * @param iterable $keys Cache keys
+     * @param mixed $default Default value for missing keys
      * @return iterable
      * @throws ReflectionException
      */
@@ -80,10 +80,10 @@ class ThinkCache implements CacheInterface
     }
 
     /**
-     * 写入缓存
+     * Set multiple cache entries.
      * @access public
-     * @param iterable $values 缓存数据
-     * @param null|int|DateInterval $ttl 有效时间 0为永久
+     * @param iterable $values Key-value pairs
+     * @param null|int|DateInterval $ttl TTL; 0 means no expiry
      * @return bool
      * @throws ReflectionException
      */
@@ -93,9 +93,9 @@ class ThinkCache implements CacheInterface
     }
 
     /**
-     * 删除缓存
+     * Delete multiple cache entries.
      * @access public
-     * @param iterable $keys 缓存变量名
+     * @param iterable $keys Cache keys
      * @return bool
      * @throws ReflectionException
      */
@@ -105,14 +105,40 @@ class ThinkCache implements CacheInterface
     }
 
     /**
-     * 判断缓存是否存在
+     * Whether a cache key exists.
      * @access public
-     * @param string $key 缓存变量名
+     * @param string $key Cache key
      * @return bool
      * @throws InvalidArgumentException|ReflectionException
      */
     public function has($key): bool
     {
         return Cache::has($key);
+    }
+
+    /**
+     * Increment a numeric cache value (used by ThinkORM lazy-write field accumulation).
+     *
+     * @param string $name Cache key
+     * @param float|int $step Step amount
+     * @return mixed
+     * @throws ReflectionException
+     */
+    public function inc(string $name, float|int $step = 1): mixed
+    {
+        return Cache::inc($name, $step);
+    }
+
+    /**
+     * Decrement a numeric cache value (used by ThinkORM lazy-write field accumulation).
+     *
+     * @param string $name Cache key
+     * @param float|int $step Step amount
+     * @return mixed
+     * @throws ReflectionException
+     */
+    public function dec(string $name, float|int $step = 1): mixed
+    {
+        return Cache::dec($name, $step);
     }
 }
