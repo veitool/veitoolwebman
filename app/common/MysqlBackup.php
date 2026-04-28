@@ -18,7 +18,7 @@ class MysqlBackup
 {
     /**
      * 数据库配置
-     * @var integer
+     * @var array
      */
     private $dbconfig = [];
 
@@ -35,7 +35,7 @@ class MysqlBackup
 
     /**
      * Session
-     * @var \request()->session()
+     * @var \webman\http\Request->session()
      */
     private $session;
 
@@ -58,7 +58,7 @@ class MysqlBackup
 
     /**
      * 数据库链接
-     * @return obj
+     * @return object
      */
     public static function connect()
     {
@@ -224,7 +224,7 @@ class MysqlBackup
     /**
      * 其他信息备份 存储过程/函数/触发器
      * @param   array   $back   信息集
-     * @return  mixd
+     * @return  mixed
      */
     function dumpEnd(array $back)
     {
@@ -493,7 +493,7 @@ class MysqlBackup
 
     /**
      * 优化表
-     * @param   string/array  $tables  数据表名
+     * @param   string|array  $tables  数据表名
      * @return  mixed
      */
     public function optimize(string|array $tables = '')
@@ -516,8 +516,8 @@ class MysqlBackup
 
     /**
      * 修复表
-     * @param    string/array   $tables   数据表名
-     * @return   array/json
+     * @param    string|array   $tables   数据表名
+     * @return   mixed
      */
     public function repair(string|array $tables = '')
     {
@@ -543,7 +543,7 @@ class MysqlBackup
      * 下载备份文件
      * @param    string   $folder   备份文件夹
      * @param    int      $pid      分卷编号
-     * @return   file
+     * @return   mixed
      */
     public function downFile(string $folder, int $pid = 0)
     {

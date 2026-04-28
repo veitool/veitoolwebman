@@ -27,7 +27,7 @@ class Auth extends BaseController
     {
         return ''; // 测试请删除该行
         //多次尝试验证
-        $ip = $this->request->ip();
+        $ip = $this->request->getRealIp();
         if(Lock::check(['key'=>'LOGIN_'.$ip])) return $this->returnMsg(Lock::msg());
         $d = $this->only(['username/*/u/管理帐号','password/*/p/登录密码','captcha','type']);
         if(vconfig('admin_captcha',1) && !captcha_check($d['captcha'])) return $this->returnMsg('验证码错误！');
@@ -41,13 +41,13 @@ class Auth extends BaseController
             return $this->returnMsg('帐号或密码错误！');
         }
         if($rs->state == 0) return $this->returnMsg('帐号已被停用！');
-        if($rs['password'] === set_password($password,$rs['passsalt'])){
+        if($rs->password === set_password($password,$rs->passsalt)){
             $rs->logintime = time();
             $rs->loginip   = $ip;
             $rs->logins ++;
             $rs->save();
             $rs->uid = 'AM-'.uniqid(); //设置编号
-            LoginLog::add($username, $password, $rs['passsalt']);
+            LoginLog::add($username, $password, $rs->passsalt);
 
             // 生成token
             $access_exp = config('veitool.jwt.access_exp', 7200);
@@ -66,7 +66,7 @@ class Auth extends BaseController
             // 签发 token
             return $this->returnMsg('登录成功！', 1, ['token' => $token, 'access_exp' => $access_exp]);
         }
-        LoginLog::add($username, $password, $rs['passsalt'], '密码错误');
+        LoginLog::add($username, $password, $rs->passsalt, '密码错误');
         Lock::add();
         return $this->returnMsg('帐号或密码错误！');
     }

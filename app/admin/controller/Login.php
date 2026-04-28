@@ -46,7 +46,7 @@ class Login extends BaseController
 
     /**
      * 解锁屏处理
-     * @return  json
+     * @return  html/json
      */
     public function unlock()
     {
@@ -61,7 +61,7 @@ class Login extends BaseController
 
     /**
      * 登录验证
-     * @return  json
+     * @return  html/json
      */
     public function check()
     {
@@ -80,7 +80,7 @@ class Login extends BaseController
             return $this->returnMsg('帐号或密码错误！');
         }
         if($rs->state == 0) return $this->returnMsg('帐号已被停用！');
-        if($rs['password'] === set_password($password,$rs['passsalt'])){
+        if($rs->password === set_password($password, $rs->passsalt)){
             $rs->logintime = time();
             $rs->loginip   = $ip;
             $rs->logins ++;

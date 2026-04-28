@@ -9,10 +9,10 @@ use Webman\RedisQueue\Consumer;
 class EmailSend implements Consumer
 {
     // 要消费的队列名，名称须和投递时的名称一致
-    public $queue = 'send-mail';
+    public string $queue = 'send-mail';
 
     // 连接名，对应 config/plugin/webman/redis-queue/redis.php 里的连接`
-    public $connection = 'default';
+    public string $connection = 'default';
 
     // 消费
     public function consume($data)
@@ -22,7 +22,7 @@ class EmailSend implements Consumer
     }
 
     // 消费失败时
-    public function onConsumeFailure(\Throwable $exception, $package)
+    public function onConsumeFailure(\Throwable $exception, array $package)
     {
         var_export($package);
         // 直接更改消息队列数据结构，将最大重试次数max_attempts字段设置为0，即不再重试。

@@ -33,7 +33,7 @@ class SystemRoles extends Base
 
     /**
      * 分页列表
-     * @return obj
+     * @return object
      */
     public function listQuery()
     {

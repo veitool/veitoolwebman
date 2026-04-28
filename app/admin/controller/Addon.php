@@ -35,7 +35,7 @@ class Addon extends AdminBase
 
     /**
      * 本地已装插件
-     * @return json
+     * @return html/json
      */
     public function exist()
     {
@@ -65,7 +65,7 @@ class Addon extends AdminBase
 
     /**
      * 插件安装
-     * @return json
+     * @return html/json
      */
     public function install()
     {
@@ -85,7 +85,7 @@ class Addon extends AdminBase
 
     /**
      * 本地上传
-     * @return json
+     * @return html/json
      */
     public function local()
     {
@@ -105,7 +105,7 @@ class Addon extends AdminBase
 
     /**
      * 卸载插件
-     * @return json
+     * @return html/json
      */
     public function uninstall()
     {
@@ -134,7 +134,7 @@ class Addon extends AdminBase
 
     /**
      * 禁用启用插件
-     * @return json
+     * @return html/json
      */
     public function state()
     {
@@ -153,7 +153,7 @@ class Addon extends AdminBase
 
     /**
      * 更新升级
-     * @return json
+     * @return html/json
      */
     public function upgrade()
     {
@@ -210,7 +210,7 @@ class Addon extends AdminBase
 
     /**
      * 插件配置更新
-     * @return json
+     * @return html/json
      */
     public function setup()
     {

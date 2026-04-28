@@ -79,7 +79,7 @@ abstract class AdminBase extends BaseController
         $us = Manager::one("username = '{$this->manUser['username']}' AND state > 0");
         if($us && $this->manUser['password'] == $us['password'] && $this->manUser['passsalt'] == $us['passsalt']){
             //禁止同帐号同时异地登录处理
-            if(in_array(vconfig('ip_login',0),[2,3]) && $us['loginip'] != $this->request->ip()){
+            if(in_array(vconfig('ip_login',0),[2,3]) && $us['loginip'] != $this->request->getRealIp()){
                 $this->request->session()->delete(VT_MANAGER);
                 $url = VT_MAP.'/login/index';
                 $this->exitMsg('您的帐号已在其他终端登录！',$this->request->isAjax() ? 401 : 303,['url'=>$url]);
@@ -110,7 +110,7 @@ abstract class AdminBase extends BaseController
     /**
      * 日志/在线处理
      * @access  protected
-     * @param   sting   $tip   提示
+     * @param   string   $tip   提示
      */
     protected function logon(string $tip = '')
     {

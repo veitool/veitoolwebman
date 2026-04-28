@@ -27,7 +27,7 @@ class SystemUploadFile extends Base
      * @param  string|array   $where    条件
      * @param  string|array   $order    排序
      * @param  string         $field    字段
-     * @return obj
+     * @return object
      */
     public function listQuery(string|array $where = '', string|array $order = ['fileid'=>'desc'], string $field = '*')
     {

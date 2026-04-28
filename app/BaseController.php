@@ -19,7 +19,7 @@ abstract class BaseController
 {
     /**
      * Request实例
-     * @var support\Request
+     * @var \Webman\Http\Request
      */
     protected $request;
 
@@ -55,7 +55,6 @@ abstract class BaseController
 
     /**
      * 构造方法
-     * @param App $app
      */
     public function __construct()
     {
@@ -107,7 +106,7 @@ abstract class BaseController
     {
         $flag1 = vconfig('home_log',0);
         $flag2 = in_array(vconfig('online_on',0),[2,3]);
-        if($flag1 || $flag2) $url = substr(vhtmlspecialchars(strip_sql($this->request->uri())),0,200);
+        $url = ($flag1 || $flag2) ? substr(vhtmlspecialchars(strip_sql($this->request->uri())),0,200) : '';
         /*访问日志*/
         if($flag1){
             \app\model\system\SystemWebLog::add(['url'=>$url.$tip,'username'=>$this->memUser['username'] ?? '','ip'=>$this->request->getRealIp()]);
@@ -148,7 +147,7 @@ abstract class BaseController
      * @param   int      $c   状态值 400前台关闭 401 Ajax请求未登陆 303网址请求未登录
      * @param   array    $d   数组信息
      * @param   array    $h   发送的Header信息
-     * @throws  HttpResponseException
+     * @throws  \app\exception\ExitMsg
      */
     protected final function exitMsg($m, $c = 0, $d = [], $h = [])
     {
@@ -315,7 +314,7 @@ abstract class BaseController
                         $v = (float) $v;
                         break;
                     case 'b':
-                        $v = (boolean) $v;
+                        $v = (bool) $v;
                         break;
                     case 's':
                         if(is_scalar($v)){
