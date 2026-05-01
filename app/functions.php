@@ -443,16 +443,16 @@ function area_pos($areaid, $str = ' &raquo; ', $deep = 0, $start = 0){
     $arrparentid = $area[$areaid]['arrparentid'] ? explode(',', $area[$areaid]['arrparentid']) : [];
     $arrparentid[] = $areaid;
     $pos = '';
-    if($deep) $i = 1;
+    $i = 1;
     $j = 0;
-    foreach($arrparentid as $areaid){
-        if(!$areaid || !isset($area[$areaid])) continue;
+    foreach($arrparentid as $id){
+        if(!$id || !isset($area[$id])) continue;
         if($j++ < $start) continue;
         if($deep){
             if($i > $deep) continue;
             $i++;
         }
-        $pos .= $area[$areaid]['areaname'].$str;
+        $pos .= $area[$id]['areaname'].$str;
     }
     $_len = strlen($str);
     if($str && substr($pos, -$_len, $_len) === $str) $pos = substr($pos, 0, strlen($pos)-$_len);
