@@ -285,26 +285,26 @@ function rmdirs($dirname, $self = true){
  * @param  string  $dest    目标文件夹
  */
 function copydirs($source, $dest){
-   if(!is_dir($dest)){
-       mkdir($dest, 0755, true);
-   }
-   $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($source, RecursiveDirectoryIterator::SKIP_DOTS),RecursiveIteratorIterator::SELF_FIRST);
-   foreach($iterator as $item){
-       if($item->isDir()){
-           $sontDir = $dest . VT_DS . $iterator->getSubPathName();
-           if(!is_dir($sontDir)){
-               mkdir($sontDir, 0755, true);
-           }
-       }else{
-           copy($item, $dest . VT_DS . $iterator->getSubPathName());
-       }
-   }
+    if(!is_dir($dest)){
+        mkdir($dest, 0755, true);
+    }
+    $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($source, RecursiveDirectoryIterator::SKIP_DOTS),RecursiveIteratorIterator::SELF_FIRST);
+    foreach($iterator as $item){
+        if($item->isDir()){
+            $sontDir = $dest . VT_DS . $iterator->getSubPathName();
+            if(!is_dir($sontDir)){
+                mkdir($sontDir, 0755, true);
+            }
+        }else{
+            copy($item, $dest . VT_DS . $iterator->getSubPathName());
+        }
+    }
 }
 
 /**
  * 移除空目录
- * @param   string   $dir  目录
- * @return
+ * @param  string   $dir  目录
+ * @return mixed
  */
 function remove_empty_folder($dir){
     try{
