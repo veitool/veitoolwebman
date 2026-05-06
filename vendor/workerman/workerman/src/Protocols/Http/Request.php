@@ -107,10 +107,30 @@ class Request implements Stringable
     public array $context = [];
 
     /**
-     * Request constructor.
+     * HTTP/1.1 chunked trailers (field names lowercased), set once by the protocol layer.
      *
+     * @var ?array<string, string>
+     */
+    protected ?array $chunkTrailers = null;
+
+    /**
+     * Request constructor.
      */
     public function __construct(protected string $buffer) {}
+
+    /**
+     * @internal Set by {@see Http::decode()} for chunked requests; first call wins.
+     *
+     * @param array<string, string> $trailers
+     * @return void
+     */
+    public function setChunkTrailers(array $trailers): void
+    {
+        if ($this->chunkTrailers !== null) {
+            return;
+        }
+        $this->chunkTrailers = $trailers;
+    }
 
     /**
      * Get query. 支持 get('a/d') get(['a/d'=>'默认值'])
@@ -164,6 +184,22 @@ class Request implements Stringable
     }
 
     /**
+     * Get trailer item by name.
+     *
+     * @param string|null $name
+     * @param mixed $default
+     * @return mixed
+     */
+    public function trailer(?string $name = null, mixed $default = null): mixed
+    {
+        $all = $this->chunkTrailers ?? [];
+        if (null === $name) {
+            return $all;
+        }
+        return $all[strtolower($name)] ?? $default;
+    }
+
+    /**
      * Get cookie item by name.
      *
      * @param string|null $name
@@ -174,7 +210,7 @@ class Request implements Stringable
     {
         if (!isset($this->data['cookie'])) {
             $cookies = explode(';', $this->header('cookie', ''));
-            $mapped = array();
+            $mapped = [];
 
             foreach ($cookies as $cookie) {
                 $cookie = explode('=', $cookie, 2);
@@ -467,14 +503,15 @@ class Request implements Stringable
         }
         $headData = explode("\r\n", $headBuffer);
         foreach ($headData as $content) {
-            if (str_contains($content, ':')) {
-                [$key, $value] = explode(':', $content, 2);
-                $key = strtolower($key);
-                $value = ltrim($value);
-            } else {
-                $key = strtolower($content);
-                $value = '';
+            if ($content === '') {
+                continue;
             }
+            $parts = explode(':', $content, 2);
+            if (!isset($parts[1])) {
+                continue;
+            }
+            $key = strtolower($parts[0]);
+            $value = trim($parts[1], " \t");
             if (isset($this->data['headers'][$key])) {
                 $this->data['headers'][$key] = "{$this->data['headers'][$key]},$value";
             } else {
@@ -540,7 +577,7 @@ class Request implements Stringable
             $this->data['post'] = $cache[$bodyBuffer];
             return;
         }
-        if (preg_match('/\bjson\b/i', $contentType)) {
+        if (str_contains($contentType, 'json')) {
             $this->data['post'] = (array)json_decode($bodyBuffer, true);
         } else {
             parse_str($bodyBuffer, $this->data['post']);
@@ -627,7 +664,7 @@ class Request implements Stringable
                         $tmpFile = '';
                         $fileName = $match[1];
                         $size = strlen($boundaryValue);
-                        $tmpUploadDir = HTTP::uploadTmpDir();
+                        $tmpUploadDir = Http::uploadTmpDir();
                         if (!$tmpUploadDir) {
                             $error = UPLOAD_ERR_NO_TMP_DIR;
                         } else if ($boundaryValue === '' && $fileName === '') {

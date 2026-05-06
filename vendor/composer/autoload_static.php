@@ -180,10 +180,10 @@ class ComposerStaticInit691f538563ac6695008ddc51b7722c80
         ),
         'support\\' => 
         array (
-            0 => __DIR__ . '/..' . '/workerman/webman-framework/src/support',
-            1 => __DIR__ . '/..' . '/webman/cache/src/support',
-            2 => __DIR__ . '/..' . '/webman/redis/src/support',
-            3 => __DIR__ . '/..' . '/webman/think-orm/src/support',
+            0 => __DIR__ . '/..' . '/webman/cache/src/support',
+            1 => __DIR__ . '/..' . '/webman/redis/src/support',
+            2 => __DIR__ . '/..' . '/webman/think-orm/src/support',
+            3 => __DIR__ . '/..' . '/workerman/webman-framework/src/support',
         ),
         'app\\View\\Components\\' => 
         array (
@@ -215,8 +215,8 @@ class ComposerStaticInit691f538563ac6695008ddc51b7722c80
         ),
         'Workerman\\' => 
         array (
-            0 => __DIR__ . '/..' . '/workerman/workerman/src',
-            1 => __DIR__ . '/..' . '/workerman/coroutine/src',
+            0 => __DIR__ . '/..' . '/workerman/coroutine/src',
+            1 => __DIR__ . '/..' . '/workerman/workerman/src',
         ),
         'Webman\\ThinkOrm\\' => 
         array (
@@ -385,9 +385,9 @@ class ComposerStaticInit691f538563ac6695008ddc51b7722c80
         ),
         'Illuminate\\Support\\' => 
         array (
-            0 => __DIR__ . '/..' . '/illuminate/macroable',
+            0 => __DIR__ . '/..' . '/illuminate/collections',
             1 => __DIR__ . '/..' . '/illuminate/conditionable',
-            2 => __DIR__ . '/..' . '/illuminate/collections',
+            2 => __DIR__ . '/..' . '/illuminate/macroable',
             3 => __DIR__ . '/..' . '/illuminate/support',
         ),
         'Illuminate\\Redis\\' => 
