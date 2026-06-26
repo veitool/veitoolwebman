@@ -664,7 +664,7 @@ class Request implements Stringable
                         $tmpFile = '';
                         $fileName = $match[1];
                         $size = strlen($boundaryValue);
-                        $tmpUploadDir = Http::uploadTmpDir();
+                        $tmpUploadDir = HTTP::uploadTmpDir();
                         if (!$tmpUploadDir) {
                             $error = UPLOAD_ERR_NO_TMP_DIR;
                         } else if ($boundaryValue === '' && $fileName === '') {
