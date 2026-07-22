@@ -717,8 +717,12 @@ class Route
                         // Null path means "method restriction only" for default route, do not register.
                         continue;
                     }
-                    $path = static::normalizeRoutePath($route->path, $controllerClass . '::' . $method->getName());
-                    $fullPath = $prefix ? rtrim($prefix, '/') . $path : $path;
+                    $source = $controllerClass . '::' . $method->getName();
+                    $path = static::normalizeRoutePath($route->path, $source);
+                    $fullPath = $prefix . $path;
+                    if ($fullPath === '') {
+                        throw new RuntimeException("Annotation route resolves to empty path: #[Get('')] requires a #[RouteGroup] prefix ($source)");
+                    }
 
                     $methods = [];
                     foreach ($route->methods as $m) {
@@ -801,6 +805,8 @@ class Route
 
     /**
      * Normalize route path.
+     * Empty string is allowed (means "use group prefix only").
+     * Non-empty path must start with '/'.
      * @param string $path
      * @param string $source
      * @return string
@@ -808,8 +814,11 @@ class Route
     protected static function normalizeRoutePath(string $path, string $source): string
     {
         $path = trim($path);
-        if ($path === '' || $path[0] !== '/') {
-            throw new RuntimeException("Annotation route path must start with '/': $path ($source)");
+        if ($path === '') {
+            return '';
+        }
+        if ($path[0] !== '/') {
+            throw new RuntimeException("Annotation route path must start with '/': '$path' ($source)");
         }
         return $path;
     }
