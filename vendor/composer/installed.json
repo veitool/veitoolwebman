@@ -450,22 +450,22 @@
         },
         {
             "name": "guzzlehttp/guzzle",
-            "version": "7.15.1",
-            "version_normalized": "7.15.1.0",
+            "version": "7.15.3",
+            "version_normalized": "7.15.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "61443dfb33c62f308ee8add20f45b4d6e4bf8d2f"
+                "reference": "ae311b8f045ea93ce7b1c9cdb7cec06c53f944bc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/61443dfb33c62f308ee8add20f45b4d6e4bf8d2f",
-                "reference": "61443dfb33c62f308ee8add20f45b4d6e4bf8d2f",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/ae311b8f045ea93ce7b1c9cdb7cec06c53f944bc",
+                "reference": "ae311b8f045ea93ce7b1c9cdb7cec06c53f944bc",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "guzzlehttp/promises": "^2.5.1",
+                "guzzlehttp/promises": "^2.5.2",
                 "guzzlehttp/psr7": "^2.13",
                 "php": "^7.2.5 || ^8.0",
                 "psr/http-client": "^1.0",
@@ -489,7 +489,7 @@
                 "ext-intl": "Required for Internationalized Domain Name (IDN) support",
                 "psr/log": "Required for using the Log middleware"
             },
-            "time": "2026-07-18T11:23:11+00:00",
+            "time": "2026-08-05T19:48:21+00:00",
             "type": "library",
             "extra": {
                 "bamarni-bin": {
@@ -561,7 +561,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/guzzle/issues",
-                "source": "https://github.com/guzzle/guzzle/tree/7.15.1"
+                "source": "https://github.com/guzzle/guzzle/tree/7.15.3"
             },
             "funding": [
                 {
@@ -674,17 +674,17 @@
         },
         {
             "name": "guzzlehttp/promises",
-            "version": "2.5.1",
-            "version_normalized": "2.5.1.0",
+            "version": "2.5.2",
+            "version_normalized": "2.5.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/promises.git",
-                "reference": "9ad1e4fc607446a055b95870c7f668e93b5cff29"
+                "reference": "2823687acff28b2dbe67b2508a6b300e2c3fa4ce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/promises/zipball/9ad1e4fc607446a055b95870c7f668e93b5cff29",
-                "reference": "9ad1e4fc607446a055b95870c7f668e93b5cff29",
+                "url": "https://api.github.com/repos/guzzle/promises/zipball/2823687acff28b2dbe67b2508a6b300e2c3fa4ce",
+                "reference": "2823687acff28b2dbe67b2508a6b300e2c3fa4ce",
                 "shasum": ""
             },
             "require": {
@@ -695,7 +695,7 @@
                 "bamarni/composer-bin-plugin": "^1.8.2",
                 "phpunit/phpunit": "^8.5.52 || ^9.6.34"
             },
-            "time": "2026-07-08T15:48:39+00:00",
+            "time": "2026-08-05T19:30:54+00:00",
             "type": "library",
             "extra": {
                 "bamarni-bin": {
@@ -741,7 +741,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/promises/issues",
-                "source": "https://github.com/guzzle/promises/tree/2.5.1"
+                "source": "https://github.com/guzzle/promises/tree/2.5.2"
             },
             "funding": [
                 {
@@ -1977,17 +1977,17 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "3.13.1",
-            "version_normalized": "3.13.1.0",
+            "version": "3.13.2",
+            "version_normalized": "3.13.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/CarbonPHP/carbon.git",
-                "reference": "2937ad3d1d2c506fd2bc97d571438a95641f44e2"
+                "reference": "a1c54919f5fff9800cd03c32bd01defd5a4061cb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CarbonPHP/carbon/zipball/2937ad3d1d2c506fd2bc97d571438a95641f44e2",
-                "reference": "2937ad3d1d2c506fd2bc97d571438a95641f44e2",
+                "url": "https://api.github.com/repos/CarbonPHP/carbon/zipball/a1c54919f5fff9800cd03c32bd01defd5a4061cb",
+                "reference": "a1c54919f5fff9800cd03c32bd01defd5a4061cb",
                 "shasum": ""
             },
             "require": {
@@ -2013,7 +2013,7 @@
                 "phpunit/phpunit": "^10.5.53",
                 "squizlabs/php_codesniffer": "^3.13.4 || ^4.0.0"
             },
-            "time": "2026-07-09T18:23:49+00:00",
+            "time": "2026-08-08T11:40:35+00:00",
             "bin": [
                 "bin/carbon"
             ],
@@ -2848,17 +2848,17 @@
         },
         {
             "name": "qcloud/cos-sdk-v5",
-            "version": "v2.6.16",
-            "version_normalized": "2.6.16.0",
+            "version": "v2.6.17",
+            "version_normalized": "2.6.17.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tencentyun/cos-php-sdk-v5.git",
-                "reference": "22366f4b4f7f277e67aa72eea8d1e02a5f9943e2"
+                "reference": "19b939580482d6e03f2e60ce8ef8b5b3aaf553fa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tencentyun/cos-php-sdk-v5/zipball/22366f4b4f7f277e67aa72eea8d1e02a5f9943e2",
-                "reference": "22366f4b4f7f277e67aa72eea8d1e02a5f9943e2",
+                "url": "https://api.github.com/repos/tencentyun/cos-php-sdk-v5/zipball/19b939580482d6e03f2e60ce8ef8b5b3aaf553fa",
+                "reference": "19b939580482d6e03f2e60ce8ef8b5b3aaf553fa",
                 "shasum": ""
             },
             "require": {
@@ -2872,7 +2872,7 @@
                 "guzzlehttp/psr7": "^1.3.1 || ^2.0",
                 "php": ">=5.6"
             },
-            "time": "2025-01-21T12:49:21+00:00",
+            "time": "2026-07-27T09:02:13+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -2914,7 +2914,7 @@
             ],
             "support": {
                 "issues": "https://github.com/tencentyun/cos-php-sdk-v5/issues",
-                "source": "https://github.com/tencentyun/cos-php-sdk-v5/tree/v2.6.16"
+                "source": "https://github.com/tencentyun/cos-php-sdk-v5/tree/v2.6.17"
             },
             "install-path": "../qcloud/cos-sdk-v5"
         },
@@ -3030,17 +3030,17 @@
         },
         {
             "name": "symfony/cache",
-            "version": "v7.3.11",
-            "version_normalized": "7.3.11.0",
+            "version": "v7.4.16",
+            "version_normalized": "7.4.16.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/cache.git",
-                "reference": "e3e76b9ba0dff3dfe08ebda500723976dd9de407"
+                "reference": "23a2c5298ca72c4d26b04611ed966c86762ffd49"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/cache/zipball/e3e76b9ba0dff3dfe08ebda500723976dd9de407",
-                "reference": "e3e76b9ba0dff3dfe08ebda500723976dd9de407",
+                "url": "https://api.github.com/repos/symfony/cache/zipball/23a2c5298ca72c4d26b04611ed966c86762ffd49",
+                "reference": "23a2c5298ca72c4d26b04611ed966c86762ffd49",
                 "shasum": ""
             },
             "require": {
@@ -3048,12 +3048,13 @@
                 "psr/cache": "^2.0|^3.0",
                 "psr/log": "^1.1|^2|^3",
                 "symfony/cache-contracts": "^3.6",
-                "symfony/deprecation-contracts": "^2.5|^3.0",
+                "symfony/deprecation-contracts": "^2.5|^3",
                 "symfony/service-contracts": "^2.5|^3",
-                "symfony/var-exporter": "^6.4|^7.0"
+                "symfony/var-exporter": "^6.4|^7.0|^8.0"
             },
             "conflict": {
                 "doctrine/dbal": "<3.6",
+                "ext-relay": "<0.12.1",
                 "symfony/dependency-injection": "<6.4",
                 "symfony/http-kernel": "<6.4",
                 "symfony/var-dumper": "<6.4"
@@ -3068,15 +3069,15 @@
                 "doctrine/dbal": "^3.6|^4",
                 "predis/predis": "^1.1|^2.0",
                 "psr/simple-cache": "^1.0|^2.0|^3.0",
-                "symfony/clock": "^6.4|^7.0",
-                "symfony/config": "^6.4|^7.0",
-                "symfony/dependency-injection": "^6.4|^7.0",
-                "symfony/filesystem": "^6.4|^7.0",
-                "symfony/http-kernel": "^6.4|^7.0",
-                "symfony/messenger": "^6.4|^7.0",
-                "symfony/var-dumper": "^6.4|^7.0"
+                "symfony/clock": "^6.4|^7.0|^8.0",
+                "symfony/config": "^6.4|^7.0|^8.0",
+                "symfony/dependency-injection": "^6.4|^7.0|^8.0",
+                "symfony/filesystem": "^6.4|^7.0|^8.0",
+                "symfony/http-kernel": "^6.4|^7.0|^8.0",
+                "symfony/messenger": "^6.4|^7.0|^8.0",
+                "symfony/var-dumper": "^6.4|^7.0|^8.0"
             },
-            "time": "2026-01-27T16:12:03+00:00",
+            "time": "2026-07-31T19:35:04+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -3111,7 +3112,7 @@
                 "psr6"
             ],
             "support": {
-                "source": "https://github.com/symfony/cache/tree/v7.3.11"
+                "source": "https://github.com/symfony/cache/tree/v7.4.16"
             },
             "funding": [
                 {
@@ -3619,23 +3620,23 @@
         },
         {
             "name": "symfony/polyfill-php83",
-            "version": "v1.38.2",
-            "version_normalized": "1.38.2.0",
+            "version": "v1.41.0",
+            "version_normalized": "1.41.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php83.git",
-                "reference": "796a26abb75ce49f3a84433cd81bf1009d73d5f8"
+                "reference": "5ea99087fb99c273a9b9236ed4c31e78b16103c6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-php83/zipball/796a26abb75ce49f3a84433cd81bf1009d73d5f8",
-                "reference": "796a26abb75ce49f3a84433cd81bf1009d73d5f8",
+                "url": "https://api.github.com/repos/symfony/polyfill-php83/zipball/5ea99087fb99c273a9b9236ed4c31e78b16103c6",
+                "reference": "5ea99087fb99c273a9b9236ed4c31e78b16103c6",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.2"
             },
-            "time": "2026-05-27T06:51:48+00:00",
+            "time": "2026-07-01T12:47:55+00:00",
             "type": "library",
             "extra": {
                 "thanks": {
@@ -3678,7 +3679,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-php83/tree/v1.38.2"
+                "source": "https://github.com/symfony/polyfill-php83/tree/v1.41.0"
             },
             "funding": [
                 {
@@ -3792,17 +3793,17 @@
         },
         {
             "name": "symfony/translation",
-            "version": "v7.4.14",
-            "version_normalized": "7.4.14.0",
+            "version": "v7.4.16",
+            "version_normalized": "7.4.16.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/translation.git",
-                "reference": "a1af4dacb24eb7ef4f1ca71b94da8ddbce572281"
+                "reference": "501e0ff4553c744209ca1a68790d8a4541563710"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/translation/zipball/a1af4dacb24eb7ef4f1ca71b94da8ddbce572281",
-                "reference": "a1af4dacb24eb7ef4f1ca71b94da8ddbce572281",
+                "url": "https://api.github.com/repos/symfony/translation/zipball/501e0ff4553c744209ca1a68790d8a4541563710",
+                "reference": "501e0ff4553c744209ca1a68790d8a4541563710",
                 "shasum": ""
             },
             "require": {
@@ -3840,7 +3841,7 @@
                 "symfony/service-contracts": "^2.5|^3",
                 "symfony/yaml": "^6.4|^7.0|^8.0"
             },
-            "time": "2026-06-06T09:33:19+00:00",
+            "time": "2026-07-30T12:37:26+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -3871,7 +3872,7 @@
             "description": "Provides tools to internationalize your application",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/translation/tree/v7.4.14"
+                "source": "https://github.com/symfony/translation/tree/v7.4.16"
             },
             "funding": [
                 {
@@ -3980,17 +3981,17 @@
         },
         {
             "name": "symfony/var-exporter",
-            "version": "v7.4.14",
-            "version_normalized": "7.4.14.0",
+            "version": "v7.4.16",
+            "version_normalized": "7.4.16.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-exporter.git",
-                "reference": "0118811b1d59f323bf131250b3fb919febfece28"
+                "reference": "ca31404415670aa3834809005b529df1b84f0790"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-exporter/zipball/0118811b1d59f323bf131250b3fb919febfece28",
-                "reference": "0118811b1d59f323bf131250b3fb919febfece28",
+                "url": "https://api.github.com/repos/symfony/var-exporter/zipball/ca31404415670aa3834809005b529df1b84f0790",
+                "reference": "ca31404415670aa3834809005b529df1b84f0790",
                 "shasum": ""
             },
             "require": {
@@ -4002,7 +4003,7 @@
                 "symfony/serializer": "^6.4|^7.0|^8.0",
                 "symfony/var-dumper": "^6.4|^7.0|^8.0"
             },
-            "time": "2026-06-27T08:41:53+00:00",
+            "time": "2026-07-30T12:37:26+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -4040,7 +4041,7 @@
                 "serialize"
             ],
             "support": {
-                "source": "https://github.com/symfony/var-exporter/tree/v7.4.14"
+                "source": "https://github.com/symfony/var-exporter/tree/v7.4.16"
             },
             "funding": [
                 {
@@ -4818,17 +4819,17 @@
         },
         {
             "name": "workerman/coroutine",
-            "version": "v1.1.5",
-            "version_normalized": "1.1.5.0",
+            "version": "v1.1.6",
+            "version_normalized": "1.1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/workerman-php/coroutine.git",
-                "reference": "b60e44267b90d398dbfa7a320f3e97b46357ac9f"
+                "reference": "918c10be5270a74f91ff77cc66b6a821cc456a25"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/workerman-php/coroutine/zipball/b60e44267b90d398dbfa7a320f3e97b46357ac9f",
-                "reference": "b60e44267b90d398dbfa7a320f3e97b46357ac9f",
+                "url": "https://api.github.com/repos/workerman-php/coroutine/zipball/918c10be5270a74f91ff77cc66b6a821cc456a25",
+                "reference": "918c10be5270a74f91ff77cc66b6a821cc456a25",
                 "shasum": ""
             },
             "require": {
@@ -4839,7 +4840,7 @@
                 "phpunit/phpunit": "^11.0",
                 "psr/log": "*"
             },
-            "time": "2026-03-12T02:07:37+00:00",
+            "time": "2026-07-26T14:42:35+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -4855,7 +4856,7 @@
             "description": "Workerman coroutine",
             "support": {
                 "issues": "https://github.com/workerman-php/coroutine/issues",
-                "source": "https://github.com/workerman-php/coroutine/tree/v1.1.5"
+                "source": "https://github.com/workerman-php/coroutine/tree/v1.1.6"
             },
             "install-path": "../workerman/coroutine"
         },
@@ -5049,17 +5050,17 @@
         },
         {
             "name": "workerman/webman-framework",
-            "version": "v2.2.2",
-            "version_normalized": "2.2.2.0",
+            "version": "v2.2.3",
+            "version_normalized": "2.2.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/walkor/webman-framework.git",
-                "reference": "4b761c0c44778618a5d9b9641fa6168fa06f95c4"
+                "reference": "d23ca5652bdd276563040cf0c01cc9e30ded9b4f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/walkor/webman-framework/zipball/4b761c0c44778618a5d9b9641fa6168fa06f95c4",
-                "reference": "4b761c0c44778618a5d9b9641fa6168fa06f95c4",
+                "url": "https://api.github.com/repos/walkor/webman-framework/zipball/d23ca5652bdd276563040cf0c01cc9e30ded9b4f",
+                "reference": "d23ca5652bdd276563040cf0c01cc9e30ded9b4f",
                 "shasum": ""
             },
             "require": {
@@ -5073,7 +5074,7 @@
             "suggest": {
                 "ext-event": "For better performance. "
             },
-            "time": "2026-07-08T03:33:00+00:00",
+            "time": "2026-07-26T12:43:49+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
