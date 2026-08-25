@@ -398,7 +398,11 @@ if (!function_exists('session')) {
      */
     function session(array|string|null $key = null, mixed $default = null): mixed
     {
-        $session = \request()->session();
+        $request = \request();
+        if (!$request) {
+            return $default;
+        }
+        $session = $request->session();
         if (null === $key) {
             return $session;
         }
@@ -692,7 +696,7 @@ if (!function_exists('input')) {
      */
     function input(?string $param = null, mixed $default = null): mixed
     {
-        return is_null($param) ? request()->all() : request()->input($param, $default);
+        return is_null($param) ? \request()->all() : \request()->input($param, $default);
     }
 }
 

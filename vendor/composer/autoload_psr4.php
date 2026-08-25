@@ -17,7 +17,7 @@ return array(
     'Workerman\\RedisQueue\\' => array($vendorDir . '/workerman/redis-queue/src'),
     'Workerman\\Crontab\\' => array($vendorDir . '/workerman/crontab/src'),
     'Workerman\\Coroutine\\' => array($vendorDir . '/workerman/coroutine/src'),
-    'Workerman\\' => array($vendorDir . '/workerman/workerman/src', $vendorDir . '/workerman/coroutine/src'),
+    'Workerman\\' => array($vendorDir . '/workerman/coroutine/src', $vendorDir . '/workerman/workerman/src'),
     'Webman\\ThinkOrm\\' => array($vendorDir . '/webman/think-orm/src'),
     'Webman\\Redis\\' => array($vendorDir . '/webman/redis/src'),
     'Webman\\RedisQueue\\' => array($vendorDir . '/webman/redis-queue/src'),

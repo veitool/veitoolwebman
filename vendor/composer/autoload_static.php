@@ -215,8 +215,8 @@ class ComposerStaticInit691f538563ac6695008ddc51b7722c80
         ),
         'Workerman\\' => 
         array (
-            0 => __DIR__ . '/..' . '/workerman/workerman/src',
-            1 => __DIR__ . '/..' . '/workerman/coroutine/src',
+            0 => __DIR__ . '/..' . '/workerman/coroutine/src',
+            1 => __DIR__ . '/..' . '/workerman/workerman/src',
         ),
         'Webman\\ThinkOrm\\' => 
         array (
