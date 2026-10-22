@@ -128,7 +128,7 @@ class Xls extends BaseWriter
             $this->writerWorksheets[$i] = new Worksheet($this->strTotal, $this->strUnique, $this->strTable, $this->colors, $this->parser, $this->preCalculateFormulas, $this->spreadsheet->getSheet($i), $this->writerWorkbook);
         }
 
-        // build Escher objects. Escher objects for workbooks needs to be build before Escher object for workbook.
+        // build Escher objects. Escher objects for worksheets need to be built before Escher object for workbook.
         $this->buildWorksheetEschers();
         $this->buildWorkbookEscher();
 
@@ -144,12 +144,15 @@ class Xls extends BaseWriter
             $this->writerWorkbook->addXfWriter($style, false);
         }
 
-        // add fonts from rich text eleemnts
+        // add fonts from rich text elements
         for ($i = 0; $i < $countSheets; ++$i) {
             foreach ($this->writerWorksheets[$i]->phpSheet->getCellCollection()->getCoordinates() as $coordinate) {
                 /** @var Cell $cell */
                 $cell = $this->writerWorksheets[$i]->phpSheet->getCellCollection()->get($coordinate);
                 $cVal = $cell->getValue();
+                if ($cVal instanceof RichText && (string) $cVal === '') {
+                    $cVal = '';
+                }
                 if ($cVal instanceof RichText) {
                     $active = $this->spreadsheet->getActiveSheetIndex();
                     $sheet = $cell->getWorksheet();
@@ -339,7 +342,7 @@ class Xls extends BaseWriter
                 while ($iInc <= $iNumColEnd) {
                     ++$countShapes[$sheetIndex];
 
-                    // create an Drawing Object for the dropdown
+                    // create a Drawing Object for the dropdown
                     $oDrawing = new BaseDrawing();
                     // get the coordinates of drawing
                     $cDrawing = Coordinate::stringFromColumnIndex($iInc) . $rangeBounds[0][1];
@@ -413,7 +416,7 @@ class Xls extends BaseWriter
         }
 
         ob_start();
-        call_user_func($renderingFunction, $drawing->getImageResource()); // @phpstan-ignore-line
+        call_user_func($renderingFunction, $drawing->getImageResource()); // @phpstan-ignore argument.type (getImageResource may theoretically be null)
         $blipData = ob_get_contents();
         ob_end_clean();
 
@@ -698,7 +701,7 @@ class Xls extends BaseWriter
         // value
         $dataProp .= 'Feuilles de calcul';
         // vtUnalignedString - headingParts
-        // wType : 0x0003 = 32 bit signed integer
+        // wType : 0x0003 = 32-bit signed integer
         $dataProp .= pack('v', 0x0300);
         // padding
         $dataProp .= pack('v', 0x0000);
@@ -791,7 +794,7 @@ class Xls extends BaseWriter
     private function writeSummaryProp(string $dataProp, int &$dataSection_NumProps, array &$dataSection, int $sumdata, int $typdata): void
     {
         if ($dataProp) {
-            $dataSection[] = [
+            $dataSection[] = [ // @phpstan-ignore parameterByRef.type (I don't know what phpstan wants here)
                 'summary' => ['pack' => 'V', 'data' => $sumdata],
                 'offset' => ['pack' => 'V'],
                 'type' => ['pack' => 'V', 'data' => $typdata], // null-terminated string prepended by dword string length
@@ -865,7 +868,7 @@ class Xls extends BaseWriter
         foreach ($dataSection as $dataProp) {
             /** @var array{data: array{data: string, length: int}, summary: array{pack: string, data: string}, offset: array{pack: string}, type: array{data: int, pack: string}} $dataProp */
             // Summary
-            $dataSection_Summary .= pack($dataProp['summary']['pack'], $dataProp['summary']['data']);
+            $dataSection_Summary .= pack($dataProp['summary']['pack'], $dataProp['summary']['data']); // @phpstan-ignore varTag.nativeType (I don't know what phpstan wants)
             // Offset
             $dataSection_Summary .= pack($dataProp['offset']['pack'], $dataSection_Content_Offset);
             // DataType

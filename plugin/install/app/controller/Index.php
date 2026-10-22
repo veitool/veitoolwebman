@@ -34,7 +34,7 @@ class Index extends BaseController
             return $this->exitMsg('管理后台已安装！如需重新安装，请删除文件 plugin/install/install.lock 并重启', 303, ['url' => '/admin']);
         }
         $this->assign([
-            'copyright' => '© 2025 veitool.com 版权所有'
+            'copyright' => '© '. date('Y') .' veitool.com 版权所有'
         ]);
     }
 

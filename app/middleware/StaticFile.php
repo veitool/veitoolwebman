@@ -39,10 +39,12 @@ class StaticFile implements MiddlewareInterface
                 // 其他地方 在拿到 Request 后可以进行加密 返回给终端 ['encrypt_data'=>DataEncryptor::aesEncrypt('你好，这是加密的原文', $this->request->aes_key, $this->request->aes_iv)]
                 // 用 key & iv 解密数据 并 合并到对应数据集
                 $data = DataEncryptor::aesDecrypt((string)$data, $request->aes_key, $request->aes_iv);
-                if($request->method() === 'GET'){
-                    $request->setGet(array_merge($request->get(), $data));
-                }else{
-                    $request->setPost(array_merge($request->post(), $data));
+                if(is_array($data) && !isset($data[0])){
+                    if($request->method() === 'GET'){
+                        $request->setGet(array_merge($request->get(), $data));
+                    }else{
+                        $request->setPost(array_merge($request->post(), $data));
+                    }
                 }
             } catch (\Exception $e) {
                 throw new \app\exception\ExitMsg("数据解密失败：{$e->getMessage()}", null, 500);

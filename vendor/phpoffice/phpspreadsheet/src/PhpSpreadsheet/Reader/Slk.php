@@ -134,7 +134,7 @@ class Slk extends BaseReader
 
         $worksheetInfo[0]['lastColumnIndex'] = $columnIndex;
         $worksheetInfo[0]['totalRows'] = $rowIndex;
-        $worksheetInfo[0]['lastColumnLetter'] = Coordinate::stringFromColumnIndex($worksheetInfo[0]['lastColumnIndex'] + 1);
+        $worksheetInfo[0]['lastColumnLetter'] = Coordinate::stringFromColumnIndex($worksheetInfo[0]['lastColumnIndex'] + 1, true);
         $worksheetInfo[0]['totalColumns'] = $worksheetInfo[0]['lastColumnIndex'] + 1;
         $worksheetInfo[0]['sheetState'] = Worksheet::SHEETSTATE_VISIBLE;
 
@@ -173,6 +173,9 @@ class Slk extends BaseReader
         'U' => 'underline',
     ];
 
+    /**
+     * @param-out true $hasCalculatedValue
+     */
     private function processFormula(string $rowDatum, bool &$hasCalculatedValue, string &$cellDataFormula, string $row, string $column): void
     {
         $cellDataFormula = '=' . substr($rowDatum, 1);
@@ -368,7 +371,7 @@ class Slk extends BaseReader
             if (array_key_exists($char, self::STYLE_SETTINGS_FONT)) {
                 $styleData['font'][self::STYLE_SETTINGS_FONT[$char]] = true;
             } elseif (array_key_exists($char, self::STYLE_SETTINGS_BORDER)) {
-                $styleData['borders'][self::STYLE_SETTINGS_BORDER[$char]]['borderStyle'] = Border::BORDER_THIN; //* @phpstan-ignore-line
+                $styleData['borders'][self::STYLE_SETTINGS_BORDER[$char]]['borderStyle'] = Border::BORDER_THIN; //* @phpstan-ignore offsetAccess.nonOffsetAccessible (I don't know how to fix this)
             } elseif ($char == 'S') {
                 $styleData['fill']['fillType'] = Fill::FILL_PATTERN_GRAY125;
             } elseif ($char == 'M') {
@@ -420,7 +423,11 @@ class Slk extends BaseReader
                 $spreadsheet->getActiveSheet()->getColumnDimension($startCol)->setWidth((float) $columnWidth);
                 do {
                     /** @var string $startCol */
-                    $spreadsheet->getActiveSheet()->getColumnDimension((string) ++$startCol)->setWidth((float) $columnWidth);
+                    $spreadsheet->getActiveSheet()
+                        ->getColumnDimension(
+                            StringHelper::stringIncrement($startCol)
+                        )
+                        ->setWidth((float) $columnWidth);
                 } while ($startCol !== $endCol);
             }
         }

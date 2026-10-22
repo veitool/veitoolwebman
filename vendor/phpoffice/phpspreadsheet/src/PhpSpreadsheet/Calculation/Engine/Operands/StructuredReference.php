@@ -6,6 +6,7 @@ use PhpOffice\PhpSpreadsheet\Calculation\Calculation;
 use PhpOffice\PhpSpreadsheet\Calculation\Exception;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Shared\StringHelper;
 use PhpOffice\PhpSpreadsheet\Worksheet\Table;
 use Stringable;
 
@@ -174,7 +175,7 @@ final class StructuredReference implements Operand, Stringable
     }
 
     /**
-     * @param array<array<int|string>> $tableRange
+     * @param array{array{string, int}, array{string, int}} $tableRange
      *
      * @return mixed[]
      */
@@ -184,8 +185,8 @@ final class StructuredReference implements Operand, Stringable
         $cellReference = $cell->getCoordinate();
 
         $columns = [];
-        $lastColumn = ++$tableRange[1][0];
-        for ($column = $tableRange[0][0]; $column !== $lastColumn; ++$column) {
+        $lastColumn = StringHelper::stringIncrement($tableRange[1][0]);
+        for ($column = $tableRange[0][0]; $column !== $lastColumn; StringHelper::stringIncrement($column)) {
             /** @var string $column */
             $columns[$column] = $worksheet
                 ->getCell($column . ($this->headersRow ?? ($this->firstDataRow - 1)))
@@ -203,8 +204,9 @@ final class StructuredReference implements Operand, Stringable
         /** @var string $reference */
         $reference = str_replace('[' . self::ITEM_SPECIFIER_THIS_ROW . '],', '', $reference);
 
-        foreach ($this->columns as $columnId => $columnName) {
-            $columnName = str_replace("\u{a0}", ' ', $columnName); //* @phpstan-ignore-line
+        foreach ($this->columns as $columnId => $columnNamex) {
+            /** @var string $columnNamex */
+            $columnName = str_replace("\u{a0}", ' ', $columnNamex);
             $reference = $this->adjustRowReference($columnName, $reference, $cell, $columnId);
         }
 
@@ -337,8 +339,9 @@ final class StructuredReference implements Operand, Stringable
     private function getColumnsForColumnReference(string $reference, int $startRow, int $endRow): string
     {
         $columnsSelected = false;
-        foreach ($this->columns as $columnId => $columnName) {
-            $columnName = str_replace("\u{a0}", ' ', $columnName ?? ''); //* @phpstan-ignore-line
+        foreach ($this->columns as $columnId => $columnNamex) {
+            /** @var ?string $columnNamex */
+            $columnName = str_replace("\u{a0}", ' ', $columnNamex ?? '');
             $cellFrom = "{$columnId}{$startRow}";
             $cellTo = "{$columnId}{$endRow}";
             $cellReference = ($cellFrom === $cellTo) ? $cellFrom : "{$cellFrom}:{$cellTo}";
