@@ -14,6 +14,7 @@
  */
 
 use support\Container;
+use support\PharStream;
 use support\Request;
 use support\Response;
 use support\Translation;
@@ -827,4 +828,8 @@ if (!function_exists('parse_name')) {
         }
         return strtolower(trim(preg_replace('/[A-Z]/', '_\\0', $name), '_'));
     }
+}
+
+if (is_phar()) {
+    PharStream::register();
 }

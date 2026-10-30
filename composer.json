@@ -39,14 +39,14 @@
     "webman/event": "^1.0",
     "webman/redis-queue": "^2.1",
     "webman/gateway-worker": "^1.0",
-    "webman/rate-limiter": "^1.1",
     "workerman/crontab": "^1.0",
     "topthink/think-template": "^3.0",
     "topthink/think-image": "^1.0",
     "webman/cache": "^2.1",
     "webman/redis": "^2.1",
     "illuminate/events": "^11.42",
-    "firebase/php-jwt": "^7.0"
+    "firebase/php-jwt": "^7.0",
+    "webman/limiter": "^2.2"
   },
   "suggest": {
     "ext-event": "For better performance. "

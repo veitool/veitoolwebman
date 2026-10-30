@@ -206,30 +206,30 @@
         },
         {
             "name": "doctrine/inflector",
-            "version": "2.1.0",
-            "version_normalized": "2.1.0.0",
+            "version": "2.1.1",
+            "version_normalized": "2.1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/inflector.git",
-                "reference": "6d6c96277ea252fc1304627204c3d5e6e15faa3b"
+                "reference": "46351b6812b7b6d52b82c3efa5dfb786a198ec88"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/inflector/zipball/6d6c96277ea252fc1304627204c3d5e6e15faa3b",
-                "reference": "6d6c96277ea252fc1304627204c3d5e6e15faa3b",
+                "url": "https://api.github.com/repos/doctrine/inflector/zipball/46351b6812b7b6d52b82c3efa5dfb786a198ec88",
+                "reference": "46351b6812b7b6d52b82c3efa5dfb786a198ec88",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.2 || ^8.0"
             },
             "require-dev": {
-                "doctrine/coding-standard": "^12.0 || ^13.0",
+                "doctrine/coding-standard": "^12.0 || ^14.0",
                 "phpstan/phpstan": "^1.12 || ^2.0",
                 "phpstan/phpstan-phpunit": "^1.4 || ^2.0",
                 "phpstan/phpstan-strict-rules": "^1.6 || ^2.0",
                 "phpunit/phpunit": "^8.5 || ^12.2"
             },
-            "time": "2025-08-10T19:31:58+00:00",
+            "time": "2026-10-26T08:14:14+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -279,7 +279,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/inflector/issues",
-                "source": "https://github.com/doctrine/inflector/tree/2.1.0"
+                "source": "https://github.com/doctrine/inflector/tree/2.1.1"
             },
             "funding": [
                 {
@@ -463,17 +463,17 @@
         },
         {
             "name": "guzzlehttp/guzzle",
-            "version": "7.16.0",
-            "version_normalized": "7.16.0.0",
+            "version": "7.16.1",
+            "version_normalized": "7.16.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "ffb62ec787050ae4fa9449cdd6b80335db69bda2"
+                "reference": "81755d989b3007ca7f88a069857553cd08e7dc2e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/ffb62ec787050ae4fa9449cdd6b80335db69bda2",
-                "reference": "ffb62ec787050ae4fa9449cdd6b80335db69bda2",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/81755d989b3007ca7f88a069857553cd08e7dc2e",
+                "reference": "81755d989b3007ca7f88a069857553cd08e7dc2e",
                 "shasum": ""
             },
             "require": {
@@ -502,7 +502,7 @@
                 "ext-intl": "Required for Internationalized Domain Name (IDN) support",
                 "psr/log": "Required for using the Log middleware"
             },
-            "time": "2026-10-18T13:38:36+00:00",
+            "time": "2026-10-25T21:35:21+00:00",
             "type": "library",
             "extra": {
                 "bamarni-bin": {
@@ -574,7 +574,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/guzzle/issues",
-                "source": "https://github.com/guzzle/guzzle/tree/7.16.0"
+                "source": "https://github.com/guzzle/guzzle/tree/7.16.1"
             },
             "funding": [
                 {
@@ -1990,17 +1990,17 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "3.15.0",
-            "version_normalized": "3.15.0.0",
+            "version": "3.15.1",
+            "version_normalized": "3.15.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/CarbonPHP/carbon.git",
-                "reference": "217d38553209bdb44e01590d9e9a2e4df8354cce"
+                "reference": "ce0e5636fae7d1e99856eb70cae4c719a284aa08"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CarbonPHP/carbon/zipball/217d38553209bdb44e01590d9e9a2e4df8354cce",
-                "reference": "217d38553209bdb44e01590d9e9a2e4df8354cce",
+                "url": "https://api.github.com/repos/CarbonPHP/carbon/zipball/ce0e5636fae7d1e99856eb70cae4c719a284aa08",
+                "reference": "ce0e5636fae7d1e99856eb70cae4c719a284aa08",
                 "shasum": ""
             },
             "require": {
@@ -2027,7 +2027,7 @@
                 "phpunit/phpunit": "^10.5.53",
                 "squizlabs/php_codesniffer": "^3.13.4 || ^4.0.0"
             },
-            "time": "2026-10-18T18:27:53+00:00",
+            "time": "2026-10-25T14:32:48+00:00",
             "bin": [
                 "bin/carbon"
             ],
@@ -3049,17 +3049,17 @@
         },
         {
             "name": "symfony/cache",
-            "version": "v7.4.21",
-            "version_normalized": "7.4.21.0",
+            "version": "v7.4.22",
+            "version_normalized": "7.4.22.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/cache.git",
-                "reference": "314a079754e9eef4c6ffe2a3b12b0ea7c6c7381a"
+                "reference": "f0024b7dd1e6d4f2f34b08c1a61c6c7d33febad7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/cache/zipball/314a079754e9eef4c6ffe2a3b12b0ea7c6c7381a",
-                "reference": "314a079754e9eef4c6ffe2a3b12b0ea7c6c7381a",
+                "url": "https://api.github.com/repos/symfony/cache/zipball/f0024b7dd1e6d4f2f34b08c1a61c6c7d33febad7",
+                "reference": "f0024b7dd1e6d4f2f34b08c1a61c6c7d33febad7",
                 "shasum": ""
             },
             "require": {
@@ -3096,7 +3096,7 @@
                 "symfony/messenger": "^6.4|^7.0|^8.0",
                 "symfony/var-dumper": "^6.4|^7.0|^8.0"
             },
-            "time": "2026-10-12T13:05:23+00:00",
+            "time": "2026-10-28T10:54:34+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -3131,7 +3131,7 @@
                 "psr6"
             ],
             "support": {
-                "source": "https://github.com/symfony/cache/tree/v7.4.21"
+                "source": "https://github.com/symfony/cache/tree/v7.4.22"
             },
             "funding": [
                 {
@@ -3393,17 +3393,17 @@
         },
         {
             "name": "symfony/finder",
-            "version": "v7.4.20",
-            "version_normalized": "7.4.20.0",
+            "version": "v7.4.22",
+            "version_normalized": "7.4.22.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
-                "reference": "2dd31e5208db7a0fda7bfc998ad727b79c2e4d1e"
+                "reference": "e13420a8e0a76bdde1e7be09f923e62ad13739f2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/2dd31e5208db7a0fda7bfc998ad727b79c2e4d1e",
-                "reference": "2dd31e5208db7a0fda7bfc998ad727b79c2e4d1e",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/e13420a8e0a76bdde1e7be09f923e62ad13739f2",
+                "reference": "e13420a8e0a76bdde1e7be09f923e62ad13739f2",
                 "shasum": ""
             },
             "require": {
@@ -3412,7 +3412,7 @@
             "require-dev": {
                 "symfony/filesystem": "^6.4|^7.0|^8.0"
             },
-            "time": "2026-09-26T06:31:10+00:00",
+            "time": "2026-10-19T16:56:54+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -3440,7 +3440,7 @@
             "description": "Finds files and directories via an intuitive fluent interface",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/finder/tree/v7.4.20"
+                "source": "https://github.com/symfony/finder/tree/v7.4.22"
             },
             "funding": [
                 {
@@ -3464,17 +3464,17 @@
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.43.0",
-            "version_normalized": "1.43.0.0",
+            "version": "v1.43.3",
+            "version_normalized": "1.43.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "4d5d331bf731e0aedbc6b2f5e61135b7b7996a72"
+                "reference": "122889ed24dc000165bcbfd77ec412f15cbdfc6a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/4d5d331bf731e0aedbc6b2f5e61135b7b7996a72",
-                "reference": "4d5d331bf731e0aedbc6b2f5e61135b7b7996a72",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/122889ed24dc000165bcbfd77ec412f15cbdfc6a",
+                "reference": "122889ed24dc000165bcbfd77ec412f15cbdfc6a",
                 "shasum": ""
             },
             "require": {
@@ -3487,7 +3487,7 @@
             "suggest": {
                 "ext-mbstring": "For best performance"
             },
-            "time": "2026-09-24T15:19:04+00:00",
+            "time": "2026-10-28T09:35:49+00:00",
             "type": "library",
             "extra": {
                 "thanks": {
@@ -3528,7 +3528,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.43.0"
+                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.43.3"
             },
             "funding": [
                 {
@@ -3898,17 +3898,17 @@
         },
         {
             "name": "symfony/translation",
-            "version": "v7.4.17",
-            "version_normalized": "7.4.17.0",
+            "version": "v7.4.22",
+            "version_normalized": "7.4.22.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/translation.git",
-                "reference": "2ee1e4a3b32a528a642babe041ff7c440b213b4b"
+                "reference": "a892cd1807bfaf0a10690359c47fdf95b162ef22"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/translation/zipball/2ee1e4a3b32a528a642babe041ff7c440b213b4b",
-                "reference": "2ee1e4a3b32a528a642babe041ff7c440b213b4b",
+                "url": "https://api.github.com/repos/symfony/translation/zipball/a892cd1807bfaf0a10690359c47fdf95b162ef22",
+                "reference": "a892cd1807bfaf0a10690359c47fdf95b162ef22",
                 "shasum": ""
             },
             "require": {
@@ -3946,7 +3946,7 @@
                 "symfony/service-contracts": "^2.5|^3",
                 "symfony/yaml": "^6.4|^7.0|^8.0"
             },
-            "time": "2026-08-21T17:40:08+00:00",
+            "time": "2026-10-25T14:40:16+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -3977,7 +3977,7 @@
             "description": "Provides tools to internationalize your application",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/translation/tree/v7.4.17"
+                "source": "https://github.com/symfony/translation/tree/v7.4.22"
             },
             "funding": [
                 {
@@ -4086,17 +4086,17 @@
         },
         {
             "name": "symfony/var-exporter",
-            "version": "v7.4.18",
-            "version_normalized": "7.4.18.0",
+            "version": "v7.4.22",
+            "version_normalized": "7.4.22.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-exporter.git",
-                "reference": "d6a87acbe48cbc707b9aba7f1a6c2215aab02603"
+                "reference": "6c967db30708068f6eaedb6ed37973bd86de2241"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-exporter/zipball/d6a87acbe48cbc707b9aba7f1a6c2215aab02603",
-                "reference": "d6a87acbe48cbc707b9aba7f1a6c2215aab02603",
+                "url": "https://api.github.com/repos/symfony/var-exporter/zipball/6c967db30708068f6eaedb6ed37973bd86de2241",
+                "reference": "6c967db30708068f6eaedb6ed37973bd86de2241",
                 "shasum": ""
             },
             "require": {
@@ -4108,7 +4108,7 @@
                 "symfony/serializer": "^6.4|^7.0|^8.0",
                 "symfony/var-dumper": "^6.4|^7.0|^8.0"
             },
-            "time": "2026-08-23T10:03:40+00:00",
+            "time": "2026-10-22T14:50:44+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -4146,7 +4146,7 @@
                 "serialize"
             ],
             "support": {
-                "source": "https://github.com/symfony/var-exporter/tree/v7.4.18"
+                "source": "https://github.com/symfony/var-exporter/tree/v7.4.22"
             },
             "funding": [
                 {
@@ -4765,18 +4765,18 @@
             "install-path": "../webman/gateway-worker"
         },
         {
-            "name": "webman/rate-limiter",
-            "version": "v1.1.9",
-            "version_normalized": "1.1.9.0",
+            "name": "webman/limiter",
+            "version": "v2.2.0",
+            "version_normalized": "2.2.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/webman-php/rate-limiter.git",
-                "reference": "d24f6f1a8aa9f239c4e4ccbd02fd1c451782b32d"
+                "url": "https://github.com/webman-php/limiter.git",
+                "reference": "1ec4f7fd179952d321fd8de78a0427b06948b2be"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webman-php/rate-limiter/zipball/d24f6f1a8aa9f239c4e4ccbd02fd1c451782b32d",
-                "reference": "d24f6f1a8aa9f239c4e4ccbd02fd1c451782b32d",
+                "url": "https://api.github.com/repos/webman-php/limiter/zipball/1ec4f7fd179952d321fd8de78a0427b06948b2be",
+                "reference": "1ec4f7fd179952d321fd8de78a0427b06948b2be",
                 "shasum": ""
             },
             "require": {
@@ -4786,25 +4786,25 @@
             "require-dev": {
                 "phpunit/phpunit": "^10.5"
             },
-            "time": "2026-03-25T01:11:52+00:00",
+            "time": "2026-02-21T07:40:48+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "Webman\\RateLimiter\\": "src"
+                    "Webman\\Limiter\\": "src",
+                    "support\\limiter\\": "src/support/limiter"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
-            "description": "Webman plugin webman/rate-limiter",
+            "description": "Rate limiting component of Webman.",
             "support": {
-                "issues": "https://github.com/webman-php/rate-limiter/issues",
-                "source": "https://github.com/webman-php/rate-limiter/tree/v1.1.9"
+                "issues": "https://github.com/webman-php/limiter/issues",
+                "source": "https://github.com/webman-php/limiter/tree/v2.2.0"
             },
-            "abandoned": "webman/limiter",
-            "install-path": "../webman/rate-limiter"
+            "install-path": "../webman/limiter"
         },
         {
             "name": "webman/redis",
@@ -4924,17 +4924,17 @@
         },
         {
             "name": "workerman/coroutine",
-            "version": "v1.1.6",
-            "version_normalized": "1.1.6.0",
+            "version": "v1.1.7",
+            "version_normalized": "1.1.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/workerman-php/coroutine.git",
-                "reference": "918c10be5270a74f91ff77cc66b6a821cc456a25"
+                "reference": "68a905d50f7ec1efcedc1ec317a75dcc3dea3f0f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/workerman-php/coroutine/zipball/918c10be5270a74f91ff77cc66b6a821cc456a25",
-                "reference": "918c10be5270a74f91ff77cc66b6a821cc456a25",
+                "url": "https://api.github.com/repos/workerman-php/coroutine/zipball/68a905d50f7ec1efcedc1ec317a75dcc3dea3f0f",
+                "reference": "68a905d50f7ec1efcedc1ec317a75dcc3dea3f0f",
                 "shasum": ""
             },
             "require": {
@@ -4945,7 +4945,7 @@
                 "phpunit/phpunit": "^11.0",
                 "psr/log": "*"
             },
-            "time": "2026-07-26T14:42:35+00:00",
+            "time": "2026-10-24T05:06:43+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -4961,7 +4961,7 @@
             "description": "Workerman coroutine",
             "support": {
                 "issues": "https://github.com/workerman-php/coroutine/issues",
-                "source": "https://github.com/workerman-php/coroutine/tree/v1.1.6"
+                "source": "https://github.com/workerman-php/coroutine/tree/v1.1.7"
             },
             "install-path": "../workerman/coroutine"
         },
@@ -5020,24 +5020,24 @@
         },
         {
             "name": "workerman/gateway-worker",
-            "version": "v4.0.1",
-            "version_normalized": "4.0.1.0",
+            "version": "v4.0.2",
+            "version_normalized": "4.0.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/walkor/GatewayWorker.git",
-                "reference": "25e4430982caa98f82e9187d092ce34b2fddfc90"
+                "reference": "1bbaaf1e9030ee0a3068ac3350fa34b012e72474"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/walkor/GatewayWorker/zipball/25e4430982caa98f82e9187d092ce34b2fddfc90",
-                "reference": "25e4430982caa98f82e9187d092ce34b2fddfc90",
+                "url": "https://api.github.com/repos/walkor/GatewayWorker/zipball/1bbaaf1e9030ee0a3068ac3350fa34b012e72474",
+                "reference": "1bbaaf1e9030ee0a3068ac3350fa34b012e72474",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.2",
                 "workerman/workerman": "^4.0.30 || ^5.1"
             },
-            "time": "2025-06-27T01:30:09+00:00",
+            "time": "2026-10-23T09:01:08+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -5061,7 +5061,7 @@
             ],
             "support": {
                 "issues": "https://github.com/walkor/GatewayWorker/issues",
-                "source": "https://github.com/walkor/GatewayWorker/tree/v4.0.1"
+                "source": "https://github.com/walkor/GatewayWorker/tree/v4.0.2"
             },
             "funding": [
                 {
@@ -5077,24 +5077,32 @@
         },
         {
             "name": "workerman/redis",
-            "version": "v2.0.6",
-            "version_normalized": "2.0.6.0",
+            "version": "v2.1.0",
+            "version_normalized": "2.1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/workerman-php/redis.git",
-                "reference": "d8800cba4c9b65e128897932f741ec89ecfbc339"
+                "reference": "36b16ab963b820aec94b819a1fdf84a04e005d11"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/workerman-php/redis/zipball/d8800cba4c9b65e128897932f741ec89ecfbc339",
-                "reference": "d8800cba4c9b65e128897932f741ec89ecfbc339",
+                "url": "https://api.github.com/repos/workerman-php/redis/zipball/36b16ab963b820aec94b819a1fdf84a04e005d11",
+                "reference": "36b16ab963b820aec94b819a1fdf84a04e005d11",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7",
+                "php": ">=7.2",
                 "workerman/workerman": "^4.1.0||^5.0.0"
             },
-            "time": "2026-06-02T07:34:24+00:00",
+            "require-dev": {
+                "phpstan/phpstan": ">=2.2.1",
+                "phpunit/phpunit": "^8.5 || ^9.6 || ^10.5 || ^11.5 || ^12.0",
+                "revolt/event-loop": "^1.0"
+            },
+            "suggest": {
+                "revolt/event-loop": "Enables coroutine-style synchronous return values when no callback is provided (requires PHP >=8.1)."
+            },
+            "time": "2026-10-28T03:42:00+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -5106,10 +5114,27 @@
             "license": [
                 "MIT"
             ],
+            "authors": [
+                {
+                    "name": "walkor",
+                    "email": "walkor@workerman.net",
+                    "homepage": "https://www.workerman.net",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Asynchronous redis client for Workerman. Supports callback and Revolt-coroutine modes.",
             "homepage": "http://www.workerman.net",
+            "keywords": [
+                "DragonFly",
+                "async",
+                "coroutine",
+                "non-blocking",
+                "redis",
+                "workerman"
+            ],
             "support": {
                 "issues": "https://github.com/workerman-php/redis/issues",
-                "source": "https://github.com/workerman-php/redis/tree/v2.0.6"
+                "source": "https://github.com/workerman-php/redis/tree/v2.1.0"
             },
             "install-path": "../workerman/redis"
         },
@@ -5155,17 +5180,17 @@
         },
         {
             "name": "workerman/webman-framework",
-            "version": "v2.2.4",
-            "version_normalized": "2.2.4.0",
+            "version": "v2.2.5",
+            "version_normalized": "2.2.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/walkor/webman-framework.git",
-                "reference": "b080c9f470f9811999c94ae6fab3871f7792d891"
+                "reference": "263ef955d8ba6a0cb6fbc1bd0912589ed67c0c8d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/walkor/webman-framework/zipball/b080c9f470f9811999c94ae6fab3871f7792d891",
-                "reference": "b080c9f470f9811999c94ae6fab3871f7792d891",
+                "url": "https://api.github.com/repos/walkor/webman-framework/zipball/263ef955d8ba6a0cb6fbc1bd0912589ed67c0c8d",
+                "reference": "263ef955d8ba6a0cb6fbc1bd0912589ed67c0c8d",
                 "shasum": ""
             },
             "require": {
@@ -5179,7 +5204,7 @@
             "suggest": {
                 "ext-event": "For better performance. "
             },
-            "time": "2026-08-24T02:24:32+00:00",
+            "time": "2026-10-25T09:46:46+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
